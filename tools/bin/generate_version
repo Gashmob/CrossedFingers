@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Get version in argument
+if (($# != 1)); then
+  echo -e "\033[31mUsage : $(basename "$0") <new version>\033[0m"
+  exit 1
+fi
+version=$(echo "$1" | sed 's/[^A-Za-z0-9._-]//g')
+
+echo -e "\033[34mChange version to \033[1m$version\033[0m"
+
+# Change version in VERSION
+echo -e " -> Change version in VERSION"
+echo -e -n "$version" > "$ROOT_DIR/VERSION"
+echo -e "    \033[32mDone\033[0m"
+
+# Version to change manually
+echo -e " -> You must change version manually in some tests files"
