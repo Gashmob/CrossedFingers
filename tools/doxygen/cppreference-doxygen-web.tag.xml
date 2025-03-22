@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<tagfile>
+    <compound kind="namespace">
+        <name>std</name>
+        <member kind="function">
+            <type>T</type>
+            <name>string</name>
+            <anchorfile>cpp/string/basic_string/basic_string</anchorfile>
+            <anchor></anchor>
+            <arglist>(T... args)</arglist>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>expected</name>
+            <anchorfile>cpp/utility/expected</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>optional</name>
+            <anchorfile>cpp/utility/optional</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>nullopt</name>
+            <anchorfile>cpp/utility/optional/nullopt</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>any</name>
+            <anchorfile>cpp/utility/any</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>ostream</name>
+            <anchorfile>cpp/io/basic_ostream</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>cout</name>
+            <anchorfile>cpp/io/cout</anchorfile>
+            <anchor></anchor>
+        </member>
+        <member kind="function">
+            <type>T</type>
+            <name>vector</name>
+            <anchorfile>cpp/container/vector</anchorfile>
+            <anchor></anchor>
+        </member>
+    </compound>
+</tagfile>
