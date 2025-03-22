@@ -30,3 +30,14 @@ jobs:
         run: nix-shell --run 'run_clang-format'
       - name: Check no changes
         run: nix-shell --run 'check_no_changes'
+
+  build-documentation:
+    name: "Build documentation"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@3715ab1a11cac9e991980d7b4a28d80c7ebdd8f9 # v28
+      - name: Build documentation
+        run: nix-shell --run 'generate_doxygen'

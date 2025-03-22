@@ -22,12 +22,13 @@ pkgs.mkShellNoCC {
     pkgs.rpm
     pkgs.nodejs_20
     pnpm
+    pkgs.doxygen
   ];
 
   shellHook = ''
     export ROOT_DIR="${currentDir}"
     export PATH="$PATH:${currentDir}/tools/bin"
     pnpm install;
-    echo -e "\n\033[34mWelcome to \033[1mCrossedFingers\033[0m\033[34m dev environment\033[0m\n"
+    echo -e "\n\033[34mWelcome to \033[1mCrossed Fingers 🤞\033[0m\033[34m dev environment\033[0m\n"
   '';
 }
