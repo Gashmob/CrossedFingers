@@ -41,21 +41,33 @@ else ()
     target_compile_options(additional_config INTERFACE -O3)
 endif ()
 
+## YesChief!
+find_package(yeschief 1.1.0 REQUIRED)
+message(STATUS "Found YesChief! ${YESCHIEF_PACKAGE_VERSION}")
+message(STATUS "Included from: ${YESCHIEF_INCLUDE_DIR}")
+
+## CrossedFingers lib
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS crossed_fingers
-        "${PROJECT_SOURCE_DIR}/src/*.cpp"
-        "${PROJECT_SOURCE_DIR}/src/**/*.cpp"
+        "${PROJECT_SOURCE_DIR}/src/crossedfingers/*.cpp"
+        "${PROJECT_SOURCE_DIR}/src/crossedfingers/**/*.cpp"
 )
 message(DEBUG SRC_FILES=${SRC_FILES})
 
 add_library(crossed_fingers ${SRC_FILES})
+target_link_libraries(crossed_fingers PUBLIC yeschief)
 
-target_include_directories(crossed_fingers PUBLIC "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(crossed_fingers PUBLIC "${PROJECT_SOURCE_DIR}/include" "${YESCHIEF_INCLUDE_DIR}")
 
 target_compile_definitions(crossed_fingers
         PUBLIC LIB_VERSION="${LIB_VERSION}"
 )
 
 target_compile_options(crossed_fingers PUBLIC -Wall)
+
+## CrossedFingers main lib
+add_library(crossed_fingers_main "${PROJECT_SOURCE_DIR}/src/main.cpp")
+target_link_libraries(crossed_fingers_main PUBLIC crossed_fingers)
+target_compile_options(crossed_fingers_main PUBLIC -Wall)
 
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # Tests

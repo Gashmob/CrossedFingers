@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,8 +21,3 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "my_lib.h"
-
-auto my_lib::addition(const int a, const int b) -> int {
-    return a + b;
-}

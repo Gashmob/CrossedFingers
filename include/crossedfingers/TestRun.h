@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,9 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <gtest/gtest.h>
-#include <my_lib.h>
+#ifndef TESTRUN_H
+#define TESTRUN_H
+/**
+ * Main class which holds TestSuites
+ */
 
-TEST(addition, itAddsInt) {
-    ASSERT_EQ(3, my_lib::addition(1, 2));
-}
+namespace crossedfingers {
+class TestRun final {
+  public:
+    static auto instance() -> TestRun &;
+
+    [[nodiscard]] auto run(int argc, char **argv) -> int;
+
+  private:
+    TestRun() = default;
+};
+} // namespace crossedfingers
+
+#endif // TESTRUN_H
