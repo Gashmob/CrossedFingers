@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,11 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef MY_LIB_H
-#define MY_LIB_H
+#include "crossedfingers/TestRun.h"
 
-namespace my_lib {
-auto addition(int a, int b) -> int;
-} // namespace my_lib
+#include "crossedfingers/commands/RunCommand.h"
 
-#endif // MY_LIB_H
+#include <iostream>
+#include <yeschief.h>
+
+using namespace crossedfingers;
+
+auto TestRun::instance() -> TestRun & {
+    static TestRun instance;
+    return instance;
+}
+
+auto TestRun::run(const int argc, char **argv) -> int {
+    if (argc < 1) {
+        throw std::runtime_error("Bad argument count given");
+    }
+    const auto program_name = std::string(argv[0]);
+    yeschief::CLI cli(program_name, "This program contains tests written with CrossedFingers 🤞");
+
+    RunCommand run;
+    cli.addCommand(&run);
+    yeschief::HelpCommand help(&cli);
+    cli.addCommand(&help);
+
+    const auto results = cli.run(argc, argv);
+    if (! results.has_value()) {
+        cli.help(std::cout);
+        return 1;
+    }
+
+    return run.run(yeschief::CLIResults({}));
+}

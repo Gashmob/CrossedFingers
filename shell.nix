@@ -7,6 +7,7 @@ let
     hash = "sha256-S3Aoh5hplZM9QwCDawTW0CpDvHK1Lk9+k6TKYIuVkZc=";
     nodejs = pkgs.nodejs_20;
   };
+  yeschief = pkgs.callPackage ./tools/nix/yeschief.nix { };
 in
 
 pkgs.mkShellNoCC {
@@ -23,6 +24,7 @@ pkgs.mkShellNoCC {
     pkgs.nodejs_20
     pnpm
     pkgs.doxygen
+    yeschief
   ];
 
   shellHook = ''

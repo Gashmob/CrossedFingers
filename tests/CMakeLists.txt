@@ -1,13 +1,3 @@
-FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG 6910c9d9165801d8827d628cb72eb7ea9dd538c5 #v1.16.0
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-include(GoogleTest)
-
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # Unit tests
 
@@ -24,8 +14,6 @@ target_include_directories(unit-tests PUBLIC
         "${PROJECT_SOURCE_DIR}/tests/unit")
 target_compile_definitions(unit-tests PUBLIC FIXTURES_PATH="${PROJECT_SOURCE_DIR}/tests/unit/Fixtures")
 
-target_link_libraries(unit-tests PRIVATE gtest_main gtest gmock crossed_fingers)
+target_link_libraries(unit-tests PRIVATE crossed_fingers crossed_fingers_main)
 
-gtest_discover_tests(unit-tests
-        PROPERTIES LABELS "unit"
-)
+add_test(NAME unit-tests COMMAND "unit-tests")
