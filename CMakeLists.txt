@@ -39,27 +39,31 @@ message(STATUS "Found YesChief!")
 message(STATUS "Included from: ${YESCHIEF_INCLUDE_DIR}")
 
 ## CrossedFingers lib
-file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS crossed_fingers
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS crossedfingers
         "${PROJECT_SOURCE_DIR}/src/crossedfingers/*.cpp"
         "${PROJECT_SOURCE_DIR}/src/crossedfingers/**/*.cpp"
 )
 message(DEBUG SRC_FILES=${SRC_FILES})
 
-add_library(crossed_fingers ${SRC_FILES})
-target_link_libraries(crossed_fingers PUBLIC yeschief)
+add_library(crossedfingers ${SRC_FILES})
+target_link_libraries(crossedfingers PUBLIC yeschief)
 
-target_include_directories(crossed_fingers PUBLIC "${PROJECT_SOURCE_DIR}/include" "${YESCHIEF_INCLUDE_DIR}")
+target_include_directories(crossedfingers PRIVATE "${YESCHIEF_INCLUDE_DIR}")
+target_include_directories(crossedfingers PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>  # <prefix>/include
+)
 
-target_compile_definitions(crossed_fingers
+target_compile_definitions(crossedfingers
         PUBLIC LIB_VERSION="${LIB_VERSION}"
 )
 
-target_compile_options(crossed_fingers PUBLIC -Wall)
+target_compile_options(crossedfingers PUBLIC -Wall)
 
 ## CrossedFingers main lib
-add_library(crossed_fingers_main "${PROJECT_SOURCE_DIR}/src/main.cpp")
-target_link_libraries(crossed_fingers_main PUBLIC crossed_fingers)
-target_compile_options(crossed_fingers_main PUBLIC -Wall)
+add_library(crossedfingers_main "${PROJECT_SOURCE_DIR}/src/main.cpp")
+target_link_libraries(crossedfingers_main PUBLIC crossedfingers)
+target_compile_options(crossedfingers_main PUBLIC -Wall)
 
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # Tests
@@ -76,7 +80,6 @@ endif ()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     message(DEBUG "Build install tree")
-    install(TARGETS crossed_fingers)
     include(packaging)
     lib_package()
 endif ()

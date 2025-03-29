@@ -14,6 +14,6 @@ target_include_directories(unit-tests PUBLIC
         "${PROJECT_SOURCE_DIR}/tests/unit")
 target_compile_definitions(unit-tests PUBLIC FIXTURES_PATH="${PROJECT_SOURCE_DIR}/tests/unit/Fixtures")
 
-target_link_libraries(unit-tests PRIVATE crossed_fingers crossed_fingers_main)
+target_link_libraries(unit-tests PRIVATE crossedfingers crossedfingers_main)
 
 add_test(NAME unit-tests COMMAND "unit-tests")
