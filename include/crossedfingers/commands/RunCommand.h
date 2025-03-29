@@ -27,11 +27,15 @@
  * Main command, it runs the tests
  */
 
+#include "../TestRun.h"
+
 #include <yeschief.h>
 
 namespace crossedfingers {
 class RunCommand final : public yeschief::Command {
   public:
+    explicit RunCommand(TestRun *test_run): _test_run(test_run) {}
+
     [[nodiscard]] auto getName() const -> std::string override {
         return "run";
     }
@@ -41,6 +45,9 @@ class RunCommand final : public yeschief::Command {
     }
 
     auto run(const yeschief::CLIResults &results) -> int override;
+
+  private:
+    TestRun *_test_run;
 };
 } // namespace crossedfingers
 

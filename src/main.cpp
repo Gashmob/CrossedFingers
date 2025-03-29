@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/TestRun.h>
+#include <crossedfingers/test.h>
 
 auto main(int argc, char **argv) -> int {
     return crossedfingers::TestRun::instance().run(argc, argv);

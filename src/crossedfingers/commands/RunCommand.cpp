@@ -23,11 +23,8 @@
  */
 #include "crossedfingers/commands/RunCommand.h"
 
-#include <iostream>
-
 using namespace crossedfingers;
 
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
-    std::cout << "Nothing to do for now\n";
-    return 0;
+    return _test_run->runSuites();
 }

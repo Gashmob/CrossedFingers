@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,4 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
+#include "crossedfingers/TestSuite.h"
+
+#include <iostream>
+#include <utility>
+
+using namespace crossedfingers;
+
+TestSuite::TestSuite(std::string name, const std::function<void()> &callback)
+    : _name(std::move(name)), _callback(callback) {}
+
+auto TestSuite::run() const -> void {
+    std::cout << " > " << _name << "\n";
+    _callback();
+}

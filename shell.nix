@@ -10,15 +10,13 @@ let
   yeschief = pkgs.callPackage ./tools/nix/yeschief.nix { };
 in
 
-pkgs.mkShellNoCC {
+pkgs.mkShell {
   name = "crossed_fingers-dev-env";
 
   packages = [
     pkgs.git
     pkgs.cmake
     pkgs.ninja
-    pkgs.clang
-    pkgs.lcov
     pkgs.dpkg
     pkgs.rpm
     pkgs.nodejs_20

@@ -27,15 +27,38 @@
  * Main class which holds TestSuites
  */
 
+#include "TestSuite.h"
+
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
 namespace crossedfingers {
 class TestRun final {
+    friend class RunCommand;
+
+    enum class Mode {
+        SETUP,
+        RUN,
+    };
+
   public:
     static auto instance() -> TestRun &;
 
     [[nodiscard]] auto run(int argc, char **argv) -> int;
 
+    auto addSuite(const std::string &name, const std::function<void()> &callback) -> int;
+
   private:
-    TestRun() = default;
+    std::vector<std::string> _suite_context;
+    std::map<std::string, std::shared_ptr<TestSuite>> _root_suites;
+    Mode _mode;
+
+    TestRun(): _mode(Mode::SETUP) {}
+
+    [[nodiscard]] auto runSuites() -> int;
 };
 } // namespace crossedfingers
 
