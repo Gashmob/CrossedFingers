@@ -21,15 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TEST_H
-#define TEST_H
-/**
- * Main header file. It includes all sub-headers and define macros
- */
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
-#include "TestRun.h"
-#include "TestSuite.h"
+#include <string>
+#include <vector>
 
-#define describe(name, callback) const auto name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+namespace crossedfingers {
+inline auto join(const std::vector<std::string> &strings, const std::string &delimiter) -> std::string {
+    if (strings.empty()) {
+        return "";
+    }
 
-#endif // TEST_H
+    std::string result = *strings.begin();
+    for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
+        result += delimiter + *it;
+    }
+
+    return result;
+}
+}
+
+#endif //UTILS_HPP

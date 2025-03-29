@@ -1,13 +1,5 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-# Nix dependencies
-file(GLOB NIX_STORE_LIB LIST_DIRECTORIES true "/nix/store/*/lib/cmake/*")
-message(DEBUG NIX_STORE_LIB=${NIX_STORE_LIB})
-list(APPEND CMAKE_PREFIX_PATH ${NIX_STORE_LIB})
-file(GLOB NIX_STORE_BIN LIST_DIRECTORIES true "/nix/store/*/bin/")
-message(DEBUG NIX_STORE_BIN=${NIX_STORE_BIN})
-list(APPEND CMAKE_PROGRAM_PATH ${NIX_STORE_BIN})
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -43,7 +35,7 @@ endif ()
 
 ## YesChief!
 find_package(yeschief 1.1.0 REQUIRED)
-message(STATUS "Found YesChief! ${YESCHIEF_PACKAGE_VERSION}")
+message(STATUS "Found YesChief!")
 message(STATUS "Included from: ${YESCHIEF_INCLUDE_DIR}")
 
 ## CrossedFingers lib

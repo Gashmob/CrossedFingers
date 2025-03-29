@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,15 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TEST_H
-#define TEST_H
-/**
- * Main header file. It includes all sub-headers and define macros
- */
+#include <crossedfingers/test.h>
+#include <iostream>
 
-#include "TestRun.h"
-#include "TestSuite.h"
+describe(TestRun, []() {
+    std::cout << "Hello from the test\n";
+    describe(addSuite, []() {
+        std::cout << "Hello from a nested test\n";
 
-#define describe(name, callback) const auto name = crossedfingers::TestRun::instance().addSuite(#name, callback)
-
-#endif // TEST_H
+        describe(ThirdLevelDescribe, []() {
+            std::cout << "Hello from a third level nested test\n";
+        });
+    });
+});

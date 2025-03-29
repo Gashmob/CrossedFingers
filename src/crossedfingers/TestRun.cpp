@@ -24,6 +24,7 @@
 #include "crossedfingers/TestRun.h"
 
 #include "crossedfingers/commands/RunCommand.h"
+#include "utils.hpp"
 
 #include <iostream>
 #include <yeschief.h>
@@ -36,13 +37,14 @@ auto TestRun::instance() -> TestRun & {
 }
 
 auto TestRun::run(const int argc, char **argv) -> int {
+    _mode = Mode::RUN;
     if (argc < 1) {
         throw std::runtime_error("Bad argument count given");
     }
     const auto program_name = std::string(argv[0]);
     yeschief::CLI cli(program_name, "This program contains tests written with CrossedFingers 🤞");
 
-    RunCommand run;
+    RunCommand run(this);
     cli.addCommand(&run);
     yeschief::HelpCommand help(&cli);
     cli.addCommand(&help);
@@ -54,4 +56,26 @@ auto TestRun::run(const int argc, char **argv) -> int {
     }
 
     return run.run(yeschief::CLIResults({}));
+}
+
+auto TestRun::addSuite(const std::string &name, const std::function<void()> &callback) -> int {
+    _suite_context.push_back(name);
+    const auto full_name = join(_suite_context, ".");
+    if (_mode == Mode::SETUP) {
+        _root_suites.emplace(full_name, std::make_shared<TestSuite>(full_name, callback));
+    } else if (_mode == Mode::RUN) {
+        TestSuite(full_name, callback).run();
+    }
+    _suite_context.pop_back();
+    return 0;
+}
+
+auto TestRun::runSuites() -> int {
+    for (const auto &[name, suite] : _root_suites) {
+        _suite_context.push_back(name);
+        suite->run();
+        _suite_context.pop_back();
+    }
+
+    return 0;
 }
