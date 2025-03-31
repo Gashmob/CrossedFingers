@@ -23,6 +23,7 @@
  */
 #include "crossedfingers/TestRun.h"
 
+#include "crossedfingers/TestCase.h"
 #include "crossedfingers/commands/RunCommand.h"
 #include "utils.hpp"
 
@@ -68,6 +69,11 @@ auto TestRun::addSuite(const std::string &name, const std::function<void()> &cal
     }
     _suite_context.pop_back();
     return 0;
+}
+
+auto TestRun::addCase(const std::string &name, const std::function<void()> &callback) const -> void {
+    const auto full_name = join(_suite_context, ".") + "::" + name;
+    TestCase(full_name, callback).run();
 }
 
 auto TestRun::runSuites() -> int {

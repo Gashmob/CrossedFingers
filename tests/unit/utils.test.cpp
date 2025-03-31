@@ -21,17 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TEST_H
-#define TEST_H
-/**
- * Main header file. It includes all sub-headers and define macros
- */
+#include <crossedfingers/test.h>
 
-#include "TestRun.h"
-#include "TestSuite.h"
+describe(utils, []() {
+    describe(join, []() {
+        it("Should returns empty if vector is empty", []() {
 
-#define describe(name, callback) const auto name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+        });
 
-#define it(name, callback) crossedfingers::TestRun::instance().addCase(name, callback)
+        it("Should join with empty string", []() {
 
-#endif // TEST_H
+        });
+
+        it("Should join with given delimiter", []() {
+
+        });
+    });
+});

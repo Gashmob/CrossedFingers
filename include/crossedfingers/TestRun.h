@@ -51,6 +51,8 @@ class TestRun final {
 
     auto addSuite(const std::string &name, const std::function<void()> &callback) -> int;
 
+    auto addCase(const std::string &name, const std::function<void()> &callback) const -> void;
+
   private:
     std::vector<std::string> _suite_context;
     std::map<std::string, std::shared_ptr<TestSuite>> _root_suites;

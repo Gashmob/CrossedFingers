@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TEST_H
-#define TEST_H
-/**
- * Main header file. It includes all sub-headers and define macros
- */
+#include "crossedfingers/TestCase.h"
 
-#include "TestRun.h"
-#include "TestSuite.h"
+#include <iostream>
+#include <utility>
 
-#define describe(name, callback) const auto name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+using namespace crossedfingers;
 
-#define it(name, callback) crossedfingers::TestRun::instance().addCase(name, callback)
+TestCase::TestCase(std::string name, const std::function<void()> &callback)
+    : _name(std::move(name)), _callback(callback) {}
 
-#endif // TEST_H
+auto TestCase::run() const -> void {
+    std::cout << " > " << _name << "\n";
+    _callback();
+}
