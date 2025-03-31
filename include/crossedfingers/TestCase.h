@@ -21,6 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
+#ifndef TESTCASE_H
+#define TESTCASE_H
+/**
+ * A test itself
+ */
 
-describe(utils, []() {});
+#include <functional>
+#include <string>
+
+namespace crossedfingers {
+class TestCase final {
+  public:
+    TestCase(std::string name, const std::function<void()> &callback);
+
+    auto run() const -> void;
+
+  private:
+    std::string _name;
+    std::function<void()> _callback;
+};
+} // namespace crossedfingers
+
+#endif // TESTCASE_H

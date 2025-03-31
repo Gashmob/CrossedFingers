@@ -19,6 +19,7 @@ pkgs.mkShell {
     pkgs.ninja
     pkgs.dpkg
     pkgs.rpm
+    pkgs.llvmPackages_19.clang-tools
     pkgs.nodejs_20
     pnpm
     pkgs.doxygen
