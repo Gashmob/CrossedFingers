@@ -23,8 +23,11 @@
  */
 #include "crossedfingers/commands/RunCommand.h"
 
+#include "crossedfingers/OutputBuffer.h"
+
 using namespace crossedfingers;
 
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
+    OutputBuffer::instance().redirect(true);
     return _test_run->runSuites();
 }

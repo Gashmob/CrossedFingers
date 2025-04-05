@@ -21,22 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestSuite.h"
+#ifndef OUTPUTBUFFER_H
+#define OUTPUTBUFFER_H
+/**
+ * Buffer and redirect program output
+ */
 
-#include "crossedfingers/OutputBuffer.h"
+#include <sstream>
+#include <string>
 
-#include <utility>
+namespace crossedfingers {
+class OutputBuffer final {
+  public:
+    static auto instance() -> OutputBuffer &;
 
-using namespace crossedfingers;
+    auto redirect(bool redirected) -> void;
 
-TestSuite::TestSuite(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
+    static auto print(const std::string &str) noexcept -> void;
 
-auto TestSuite::run() const -> void {
-    OutputBuffer::print(" > " + _name + "\n");
-    _callback();
-}
+  private:
+    bool _redirected;
+    std::streambuf *_out;
+    std::stringstream _redirection;
 
-auto TestSuite::list() const -> void {
-    _callback();
-}
+    OutputBuffer();
+
+    ~OutputBuffer();
+};
+} // namespace crossedfingers
+
+#endif // OUTPUTBUFFER_H

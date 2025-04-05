@@ -24,6 +24,7 @@
 #include "crossedfingers/TestRun.h"
 
 #include "crossedfingers/TestCase.h"
+#include "crossedfingers/commands/ListCommand.h"
 #include "crossedfingers/commands/RunCommand.h"
 #include "utils.hpp"
 
@@ -47,6 +48,8 @@ auto TestRun::run(const int argc, char **argv) -> int {
 
     RunCommand run(this);
     cli.addCommand(&run);
+    ListCommand list(this);
+    cli.addCommand(&list);
     yeschief::HelpCommand help(&cli);
     cli.addCommand(&help);
 
@@ -66,6 +69,8 @@ auto TestRun::addSuite(const std::string &name, const std::function<void()> &cal
         _root_suites.emplace(full_name, std::make_shared<TestSuite>(full_name, callback));
     } else if (_mode == Mode::RUN) {
         TestSuite(full_name, callback).run();
+    } else if (_mode == Mode::LIST) {
+        TestSuite(full_name, callback).list();
     }
     _suite_context.pop_back();
     return 0;
@@ -73,7 +78,14 @@ auto TestRun::addSuite(const std::string &name, const std::function<void()> &cal
 
 auto TestRun::addCase(const std::string &name, const std::function<void()> &callback) const -> void {
     const auto full_name = join(_suite_context, ".") + "::" + name;
-    TestCase(full_name, callback).run();
+    if (_mode == Mode::SETUP) {
+        throw std::logic_error("Hmmm, there is something strange : a case were added during setup");
+    }
+    if (_mode == Mode::RUN) {
+        TestCase(full_name, callback).run();
+    } else if (_mode == Mode::LIST) {
+        TestCase(full_name, callback).list();
+    }
 }
 
 auto TestRun::runSuites() -> int {
@@ -83,5 +95,15 @@ auto TestRun::runSuites() -> int {
         _suite_context.pop_back();
     }
 
+    return 0;
+}
+
+auto TestRun::listSuites() -> int {
+    _mode = Mode::LIST;
+    for (const auto &[name, suite] : _root_suites) {
+        _suite_context.push_back(name);
+        suite->list();
+        _suite_context.pop_back();
+    }
     return 0;
 }
