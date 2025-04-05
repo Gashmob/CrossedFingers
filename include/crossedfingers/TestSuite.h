@@ -37,6 +37,8 @@ class TestSuite final {
 
     auto run() const -> void;
 
+    auto list() const -> void;
+
   private:
     std::string _name;
     std::function<void()> _callback;

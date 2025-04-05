@@ -38,10 +38,12 @@
 namespace crossedfingers {
 class TestRun final {
     friend class RunCommand;
+    friend class ListCommand;
 
     enum class Mode {
         SETUP,
         RUN,
+        LIST,
     };
 
   public:
@@ -61,6 +63,8 @@ class TestRun final {
     TestRun(): _mode(Mode::SETUP) {}
 
     [[nodiscard]] auto runSuites() -> int;
+
+    [[nodiscard]] auto listSuites() -> int;
 };
 } // namespace crossedfingers
 

@@ -21,22 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestSuite.h"
+#include <crossedfingers/test.h>
 
-#include "crossedfingers/OutputBuffer.h"
-
-#include <utility>
-
-using namespace crossedfingers;
-
-TestSuite::TestSuite(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
-
-auto TestSuite::run() const -> void {
-    OutputBuffer::print(" > " + _name + "\n");
-    _callback();
-}
-
-auto TestSuite::list() const -> void {
-    _callback();
-}
+describe(ListCommand, []() {});

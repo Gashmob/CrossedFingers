@@ -23,7 +23,8 @@
  */
 #include "crossedfingers/TestCase.h"
 
-#include <iostream>
+#include "crossedfingers/OutputBuffer.h"
+
 #include <utility>
 
 using namespace crossedfingers;
@@ -32,6 +33,10 @@ TestCase::TestCase(std::string name, const std::function<void()> &callback)
     : _name(std::move(name)), _callback(callback) {}
 
 auto TestCase::run() const -> void {
-    std::cout << " > " << _name << "\n";
+    OutputBuffer::print(" > " + _name + "\n");
     _callback();
+}
+
+auto TestCase::list() const -> void {
+    OutputBuffer::print(_name + "\n");
 }
