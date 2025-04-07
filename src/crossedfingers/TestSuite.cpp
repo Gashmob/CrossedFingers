@@ -23,8 +23,9 @@
  */
 #include "crossedfingers/TestSuite.h"
 
-#include "crossedfingers/OutputBuffer.h"
+#include "crossedfingers/TestStatus.h"
 
+#include <format>
 #include <utility>
 
 using namespace crossedfingers;
@@ -33,8 +34,13 @@ TestSuite::TestSuite(std::string name, const std::function<void()> &callback)
     : _name(std::move(name)), _callback(callback) {}
 
 auto TestSuite::run() const -> void {
-    OutputBuffer::print(" > " + _name + "\n");
-    _callback();
+    TestStatus::instance().beginSuite(_name);
+    try {
+        _callback();
+    } catch (const std::exception &exception) {
+        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
+    }
+    TestStatus::instance().endSuite();
 }
 
 auto TestSuite::list() const -> void {

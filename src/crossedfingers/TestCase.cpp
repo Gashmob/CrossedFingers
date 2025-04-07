@@ -23,8 +23,10 @@
  */
 #include "crossedfingers/TestCase.h"
 
-#include "crossedfingers/OutputBuffer.h"
+#include "crossedfingers/TestStatus.h"
+#include "crossedfingers/display/OutputWrapper.h"
 
+#include <format>
 #include <utility>
 
 using namespace crossedfingers;
@@ -33,10 +35,15 @@ TestCase::TestCase(std::string name, const std::function<void()> &callback)
     : _name(std::move(name)), _callback(callback) {}
 
 auto TestCase::run() const -> void {
-    OutputBuffer::print(" > " + _name + "\n");
-    _callback();
+    TestStatus::instance().beginCase(_name);
+    try {
+        _callback();
+    } catch (const std::exception &exception) {
+        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
+    }
+    TestStatus::instance().endCase();
 }
 
 auto TestCase::list() const -> void {
-    OutputBuffer::print(_name + "\n");
+    OutputWrapper::print(_name + "\n");
 }

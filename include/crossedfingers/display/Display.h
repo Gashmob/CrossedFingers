@@ -21,33 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef OUTPUTBUFFER_H
-#define OUTPUTBUFFER_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 /**
- * Buffer and redirect program output
+ * How to display tests in console
  */
 
-#include <sstream>
+#include <map>
 #include <string>
+#include <vector>
 
 namespace crossedfingers {
-class OutputBuffer final {
+class Display {
   public:
-    static auto instance() -> OutputBuffer &;
+    virtual auto printBeginSuite(const std::string &suite_name) -> void = 0;
 
-    auto redirect(bool redirected) -> void;
+    virtual auto printBeginCase(const std::string &case_name) -> void = 0;
 
-    static auto print(const std::string &str) noexcept -> void;
+    virtual auto printEndCase(const std::string &case_name) -> void = 0;
 
-  private:
-    bool _redirected;
-    std::streambuf *_out;
-    std::stringstream _redirection;
+    virtual auto printEndSuite(const std::string &suite_name) -> void = 0;
 
-    OutputBuffer();
+    virtual auto printSkipCase(const std::string &case_name) -> void = 0;
 
-    ~OutputBuffer();
+    virtual auto printFailCase(const std::string &case_name, const std::string &message) -> void = 0;
+
+    virtual auto printSummary(
+        int test_count,
+        int assertion_count,
+        const std::vector<std::string> &succeed_tests,
+        const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &failed_tests
+    ) -> void
+        = 0;
+
+  protected:
+    Display() = default;
+
+    ~Display() = default;
 };
 } // namespace crossedfingers
 
-#endif // OUTPUTBUFFER_H
+#endif // DISPLAY_H

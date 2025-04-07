@@ -21,38 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/OutputBuffer.h"
+#include "crossedfingers/display/OutputWrapper.h"
 
 #include <iostream>
 
 using namespace crossedfingers;
 
-auto OutputBuffer::instance() -> OutputBuffer & {
-    static OutputBuffer instance;
+auto OutputWrapper::init() -> OutputWrapper & {
+    static OutputWrapper instance;
     return instance;
 }
 
-auto OutputBuffer::redirect(const bool redirected) -> void {
-    if (_redirected == redirected) {
-        return;
-    }
-
-    _redirected = redirected;
-    if (_redirected) {
-        _out = std::cout.rdbuf(_redirection.rdbuf());
-    } else {
-        std::cout.rdbuf(_out);
-    }
-}
-
-auto OutputBuffer::print(const std::string &str) noexcept -> void {
+auto OutputWrapper::print(const std::string &str) noexcept -> void {
     fprintf(stdout, "%s", str.c_str());
 }
 
-OutputBuffer::OutputBuffer(): _redirected(false), _out(std::cout.rdbuf()) {}
+OutputWrapper::OutputWrapper() {
+    _out = std::cout.rdbuf(_redirection.rdbuf());
+}
 
-OutputBuffer::~OutputBuffer() {
-    if (_redirected) {
-        std::cout.rdbuf(_out);
-    }
+OutputWrapper::~OutputWrapper() {
+    std::cout.rdbuf(_out);
 }

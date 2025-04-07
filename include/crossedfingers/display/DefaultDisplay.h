@@ -21,16 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/commands/RunCommand.h"
+#ifndef DEFAULTDISPLAY_H
+#define DEFAULTDISPLAY_H
+/**
+ * Default simple display
+ */
 
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/display/DefaultDisplay.h"
-#include "crossedfingers/display/OutputWrapper.h"
+#include "Display.h"
 
-using namespace crossedfingers;
+namespace crossedfingers {
+class DefaultDisplay final : public Display {
+  public:
+    auto printBeginSuite(const std::string &suite_name) -> void override;
 
-auto RunCommand::run(const yeschief::CLIResults &results) -> int {
-    OutputWrapper::init();
-    TestStatus::instance().setDisplay(new DefaultDisplay());
-    return _test_run->runSuites();
-}
+    auto printBeginCase(const std::string &case_name) -> void override;
+
+    auto printEndCase(const std::string &case_name) -> void override;
+
+    auto printEndSuite(const std::string &suite_name) -> void override;
+
+    auto printSkipCase(const std::string &case_name) -> void override;
+
+    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
+
+    auto printSummary(
+        int test_count,
+        int assertion_count,
+        const std::vector<std::string> &succeed_tests,
+        const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &failed_tests
+    ) -> void override;
+};
+} // namespace crossedfingers
+
+#endif // DEFAULTDISPLAY_H

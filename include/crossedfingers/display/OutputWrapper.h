@@ -21,16 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/commands/RunCommand.h"
+#ifndef OUTPUTWRAPPER_H
+#define OUTPUTWRAPPER_H
+/**
+ * Wrapper around iostream
+ */
 
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/display/DefaultDisplay.h"
-#include "crossedfingers/display/OutputWrapper.h"
+#include <sstream>
+#include <string>
 
-using namespace crossedfingers;
+namespace crossedfingers {
+class OutputWrapper final {
+  public:
+    static auto init() -> OutputWrapper &;
 
-auto RunCommand::run(const yeschief::CLIResults &results) -> int {
-    OutputWrapper::init();
-    TestStatus::instance().setDisplay(new DefaultDisplay());
-    return _test_run->runSuites();
-}
+    static auto print(const std::string &str) noexcept -> void;
+
+  private:
+    std::streambuf *_out;
+    std::stringstream _redirection;
+
+    OutputWrapper();
+
+    ~OutputWrapper();
+};
+} // namespace crossedfingers
+
+#endif // OUTPUTWRAPPER_H
