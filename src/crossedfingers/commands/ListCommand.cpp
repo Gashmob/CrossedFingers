@@ -23,11 +23,11 @@
  */
 #include "crossedfingers/commands/ListCommand.h"
 
-#include "crossedfingers/OutputBuffer.h"
+#include "crossedfingers/display/OutputWrapper.h"
 
 using namespace crossedfingers;
 
 auto ListCommand::run(const yeschief::CLIResults &results) -> int {
-    OutputBuffer::instance().redirect(true);
+    OutputWrapper::init();
     return _test_run->listSuites();
 }

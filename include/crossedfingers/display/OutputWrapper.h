@@ -21,34 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestCase.h"
+#ifndef OUTPUTWRAPPER_H
+#define OUTPUTWRAPPER_H
+/**
+ * Wrapper around iostream
+ */
 
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
-#include "crossedfingers/display/OutputWrapper.h"
+#include <sstream>
+#include <string>
 
-#include <format>
-#include <utility>
+namespace crossedfingers {
+class OutputWrapper final {
+  public:
+    static auto init() -> OutputWrapper &;
 
-using namespace crossedfingers;
+    static auto print(const std::string &str) noexcept -> void;
 
-TestCase::TestCase(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
+  private:
+    std::streambuf *_out;
+    std::stringstream _redirection;
 
-auto TestCase::run() const -> void {
-    TestStatus::instance().beginCase(_name);
-    try {
-        _callback();
-    } catch (SkipException &) {
-        TestStatus::instance().skip();
-    } catch (AssertionException &failure) {
-        TestStatus::instance().failure(failure._message);
-    } catch (const std::exception &exception) {
-        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
-    }
-    TestStatus::instance().endCase();
-}
+    OutputWrapper();
 
-auto TestCase::list() const -> void {
-    OutputWrapper::print(_name + "\n");
-}
+    ~OutputWrapper();
+};
+} // namespace crossedfingers
+
+#endif // OUTPUTWRAPPER_H

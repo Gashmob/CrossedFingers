@@ -21,34 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestCase.h"
-
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
 #include "crossedfingers/display/OutputWrapper.h"
 
-#include <format>
-#include <utility>
+#include <iostream>
 
 using namespace crossedfingers;
 
-TestCase::TestCase(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
-
-auto TestCase::run() const -> void {
-    TestStatus::instance().beginCase(_name);
-    try {
-        _callback();
-    } catch (SkipException &) {
-        TestStatus::instance().skip();
-    } catch (AssertionException &failure) {
-        TestStatus::instance().failure(failure._message);
-    } catch (const std::exception &exception) {
-        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
-    }
-    TestStatus::instance().endCase();
+auto OutputWrapper::init() -> OutputWrapper & {
+    static OutputWrapper instance;
+    return instance;
 }
 
-auto TestCase::list() const -> void {
-    OutputWrapper::print(_name + "\n");
+auto OutputWrapper::print(const std::string &str) noexcept -> void {
+    fprintf(stdout, "%s", str.c_str());
+}
+
+OutputWrapper::OutputWrapper() {
+    _out = std::cout.rdbuf(_redirection.rdbuf());
+}
+
+OutputWrapper::~OutputWrapper() {
+    std::cout.rdbuf(_out);
 }

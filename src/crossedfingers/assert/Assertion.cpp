@@ -21,33 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef OUTPUTBUFFER_H
-#define OUTPUTBUFFER_H
-/**
- * Buffer and redirect program output
- */
+#include "crossedfingers/assert/Assertion.h"
 
-#include <sstream>
-#include <string>
+#include "crossedfingers/TestStatus.h"
+#include "crossedfingers/assert/AssertionException.h"
 
-namespace crossedfingers {
-class OutputBuffer final {
-  public:
-    static auto instance() -> OutputBuffer &;
+using namespace crossedfingers;
 
-    auto redirect(bool redirected) -> void;
+auto Assertion::_skip() -> void {
+    throw SkipException();
+}
 
-    static auto print(const std::string &str) noexcept -> void;
+auto Assertion::_fail(const std::string &message) -> void {
+    throw AssertionException(message);
+}
 
-  private:
-    bool _redirected;
-    std::streambuf *_out;
-    std::stringstream _redirection;
-
-    OutputBuffer();
-
-    ~OutputBuffer();
-};
-} // namespace crossedfingers
-
-#endif // OUTPUTBUFFER_H
+auto Assertion::success() noexcept -> void {
+    TestStatus::instance().success();
+}

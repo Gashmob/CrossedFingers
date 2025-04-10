@@ -21,17 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TEST_H
-#define TEST_H
+#ifndef ASSERT_H
+#define ASSERT_H
 /**
- * Main header file. It includes all sub-headers and define macros
+ * Collection of assertions
  */
 
-#include "TestRun.h"
-#include "assert/assert.h"
+#include "Assertion.h"
 
-#define describe(name, callback) const auto name##_test = crossedfingers::TestRun::instance().addSuite(#name, callback)
+#define skip() crossedfingers::Assertion::_skip()
 
-#define it(name, callback) crossedfingers::TestRun::instance().addCase(name, callback)
+#define fail(message) crossedfingers::Assertion::_fail(message)
 
-#endif // TEST_H
+#define assertTrue(value) assertEquals(true, value)
+
+#define assertFalse(value) assertEquals(false, value)
+
+#define assertEquals(expected, value) crossedfingers::Assertion::_assertEquals(expected, value)
+
+#define assertSame(expected, value) crossedfingers::Assertion::_assertSame(expected, value)
+
+#define assertNotEquals(expected, value) crossedfingers::Assertion::_assertNotEquals(expected, value)
+
+#define assertLessThan(expected, value) crossedfingers::Assertion::_assertLessThan(expected, value)
+
+#define assertThrow(expression, exception)                            \
+    crossedfingers::Assertion::_assertThrow<exception>([]() -> void { \
+        expression;                                                   \
+    })
+
+#define assertNotThrow(expression)                            \
+    crossedfingers::Assertion::_assertNotThrow([]() -> void { \
+        expression;                                           \
+    })
+
+#endif // ASSERT_H
