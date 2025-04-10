@@ -21,34 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestCase.h"
+#ifndef ASSERTIONEXCEPTION_H
+#define ASSERTIONEXCEPTION_H
+/**
+ * Exceptions thrown by Assertion
+ */
 
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
-#include "crossedfingers/display/OutputWrapper.h"
-
-#include <format>
+#include <string>
 #include <utility>
 
-using namespace crossedfingers;
+namespace crossedfingers {
+class AssertionException : public std::exception {
+  public:
+    const std::string _message;
 
-TestCase::TestCase(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
+    explicit AssertionException(std::string message): _message(std::move(message)) {}
+};
 
-auto TestCase::run() const -> void {
-    TestStatus::instance().beginCase(_name);
-    try {
-        _callback();
-    } catch (SkipException &) {
-        TestStatus::instance().skip();
-    } catch (AssertionException &failure) {
-        TestStatus::instance().failure(failure._message);
-    } catch (const std::exception &exception) {
-        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
-    }
-    TestStatus::instance().endCase();
-}
+class SkipException final : public AssertionException {
+  public:
+    SkipException(): AssertionException("Test case skipped") {}
+};
+} // namespace crossedfingers
 
-auto TestCase::list() const -> void {
-    OutputWrapper::print(_name + "\n");
-}
+#endif // ASSERTIONEXCEPTION_H

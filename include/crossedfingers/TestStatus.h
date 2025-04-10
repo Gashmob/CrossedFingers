@@ -54,6 +54,8 @@ class TestStatus final {
 
     auto skip() -> void;
 
+    auto warning(const std::string &message) -> void;
+
     auto failure(const std::string &message) -> void;
 
     auto summary() const -> void;
@@ -66,6 +68,7 @@ class TestStatus final {
     int _current_assertion_count = 0;
     std::vector<std::string> _succeed_tests;
     std::vector<std::string> _skipped_tests;
+    std::map<std::string, std::string> _warning_tests;
     std::map<std::string, std::string> _failed_tests;
 
     std::stack<std::string> _current_suite;

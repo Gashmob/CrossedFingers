@@ -21,40 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef DEFAULTDISPLAY_H
-#define DEFAULTDISPLAY_H
+#ifndef ASSERT_H
+#define ASSERT_H
 /**
- * Default simple display
+ * Collection of assertions
  */
 
-#include "Display.h"
+#include "Assertion.h"
 
-namespace crossedfingers {
-class DefaultDisplay final : public Display {
-  public:
-    auto printBeginSuite(const std::string &suite_name) -> void override;
+#define skip() crossedfingers::Assertion::_skip()
 
-    auto printBeginCase(const std::string &case_name) -> void override;
+#define fail(message) crossedfingers::Assertion::_fail(message)
 
-    auto printEndCase(const std::string &case_name) -> void override;
+#define assertTrue(value) assertEquals(true, value)
 
-    auto printEndSuite(const std::string &suite_name) -> void override;
+#define assertFalse(value) assertEquals(false, value)
 
-    auto printSkipCase(const std::string &case_name) -> void override;
+#define assertEquals(expected, value) crossedfingers::Assertion::_assertEquals(expected, value)
 
-    auto printWarningCase(const std::string &case_name) -> void override;
+#define assertSame(expected, value) crossedfingers::Assertion::_assertSame(expected, value)
 
-    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
+#define assertNotEquals(expected, value) crossedfingers::Assertion::_assertNotEquals(expected, value)
 
-    auto printSummary(
-        int test_count,
-        int assertion_count,
-        const std::vector<std::string> &succeed_tests,
-        const std::vector<std::string> &skipped_tests,
-        const std::map<std::string, std::string> &warning_tests,
-        const std::map<std::string, std::string> &failed_tests
-    ) -> void override;
-};
-} // namespace crossedfingers
+#define assertLessThan(expected, value) crossedfingers::Assertion::_assertLessThan(expected, value)
 
-#endif // DEFAULTDISPLAY_H
+#define assertThrow(expression, exception)                            \
+    crossedfingers::Assertion::_assertThrow<exception>([]() -> void { \
+        expression;                                                   \
+    })
+
+#define assertNotThrow(expression)                            \
+    crossedfingers::Assertion::_assertNotThrow([]() -> void { \
+        expression;                                           \
+    })
+
+#endif // ASSERT_H
