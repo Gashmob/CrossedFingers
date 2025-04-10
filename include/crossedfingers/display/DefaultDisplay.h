@@ -42,6 +42,8 @@ class DefaultDisplay final : public Display {
 
     auto printSkipCase(const std::string &case_name) -> void override;
 
+    auto printWarningCase(const std::string &case_name) -> void override;
+
     auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
 
     auto printSummary(
@@ -49,6 +51,7 @@ class DefaultDisplay final : public Display {
         int assertion_count,
         const std::vector<std::string> &succeed_tests,
         const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &warning_tests,
         const std::map<std::string, std::string> &failed_tests
     ) -> void override;
 };

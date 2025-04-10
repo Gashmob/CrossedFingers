@@ -12,4 +12,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ cmake ninja ];
   buildInputs = [ yeschief ];
+  cmakeFlags = [ "-DBUILD_TESTING=On" ];
+
+  doCheck = true;
 }

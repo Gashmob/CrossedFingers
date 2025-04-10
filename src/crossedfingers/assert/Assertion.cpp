@@ -21,34 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestCase.h"
+#include "crossedfingers/assert/Assertion.h"
 
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/assert/AssertionException.h"
-#include "crossedfingers/display/OutputWrapper.h"
-
-#include <format>
-#include <utility>
 
 using namespace crossedfingers;
 
-TestCase::TestCase(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
-
-auto TestCase::run() const -> void {
-    TestStatus::instance().beginCase(_name);
-    try {
-        _callback();
-    } catch (SkipException &) {
-        TestStatus::instance().skip();
-    } catch (AssertionException &failure) {
-        TestStatus::instance().failure(failure._message);
-    } catch (const std::exception &exception) {
-        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
-    }
-    TestStatus::instance().endCase();
+auto Assertion::_skip() -> void {
+    throw SkipException();
 }
 
-auto TestCase::list() const -> void {
-    OutputWrapper::print(_name + "\n");
+auto Assertion::_fail(const std::string &message) -> void {
+    throw AssertionException(message);
+}
+
+auto Assertion::success() noexcept -> void {
+    TestStatus::instance().success();
 }

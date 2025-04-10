@@ -57,6 +57,11 @@ auto TestStatus::endCase() -> void {
         return;
     }
 
+    if (_current_assertion_count == 0) {
+        warning("Test did not perform any assertions");
+        return;
+    }
+
     _assertion_count += _current_assertion_count;
     _current_assertion_count = 0;
     _succeed_tests.push_back(_current_case.value());
@@ -90,9 +95,22 @@ auto TestStatus::skip() -> void {
 
     _assertion_count += _current_assertion_count;
     _current_assertion_count = 0;
-    _succeed_tests.push_back(_current_case.value());
+    _skipped_tests.push_back(_current_case.value());
 
     _display->printSkipCase(_current_case.value());
+    _current_case = std::nullopt;
+}
+
+auto TestStatus::warning(const std::string &message) -> void {
+    if (! _current_case.has_value()) {
+        throw std::logic_error("Not in a test case, should be the case");
+    }
+
+    _assertion_count += _current_assertion_count;
+    _current_assertion_count = 0;
+    _warning_tests.emplace(_current_case.value(), message);
+
+    _display->printWarningCase(_current_case.value());
     _current_case = std::nullopt;
 }
 
@@ -110,7 +128,9 @@ auto TestStatus::failure(const std::string &message) -> void {
 }
 
 auto TestStatus::summary() const -> void {
-    _display->printSummary(_test_count, _assertion_count, _succeed_tests, _skipped_tests, _failed_tests);
+    _display->printSummary(
+        _test_count, _assertion_count, _succeed_tests, _skipped_tests, _warning_tests, _failed_tests
+    );
 }
 
 auto TestStatus::returnValue() const noexcept -> int {
