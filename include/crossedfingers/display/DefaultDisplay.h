@@ -21,38 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/OutputBuffer.h"
+#ifndef DEFAULTDISPLAY_H
+#define DEFAULTDISPLAY_H
+/**
+ * Default simple display
+ */
 
-#include <iostream>
+#include "Display.h"
 
-using namespace crossedfingers;
+namespace crossedfingers {
+class DefaultDisplay final : public Display {
+  public:
+    auto printBeginSuite(const std::string &suite_name) -> void override;
 
-auto OutputBuffer::instance() -> OutputBuffer & {
-    static OutputBuffer instance;
-    return instance;
-}
+    auto printBeginCase(const std::string &case_name) -> void override;
 
-auto OutputBuffer::redirect(const bool redirected) -> void {
-    if (_redirected == redirected) {
-        return;
-    }
+    auto printEndCase(const std::string &case_name) -> void override;
 
-    _redirected = redirected;
-    if (_redirected) {
-        _out = std::cout.rdbuf(_redirection.rdbuf());
-    } else {
-        std::cout.rdbuf(_out);
-    }
-}
+    auto printEndSuite(const std::string &suite_name) -> void override;
 
-auto OutputBuffer::print(const std::string &str) noexcept -> void {
-    fprintf(stdout, "%s", str.c_str());
-}
+    auto printSkipCase(const std::string &case_name) -> void override;
 
-OutputBuffer::OutputBuffer(): _redirected(false), _out(std::cout.rdbuf()) {}
+    auto printWarningCase(const std::string &case_name) -> void override;
 
-OutputBuffer::~OutputBuffer() {
-    if (_redirected) {
-        std::cout.rdbuf(_out);
-    }
-}
+    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
+
+    auto printSummary(
+        int test_count,
+        int assertion_count,
+        const std::vector<std::string> &succeed_tests,
+        const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &warning_tests,
+        const std::map<std::string, std::string> &failed_tests
+    ) -> void override;
+};
+} // namespace crossedfingers
+
+#endif // DEFAULTDISPLAY_H
