@@ -21,6 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
+#ifndef ASSERTIONEXCEPTION_H
+#define ASSERTIONEXCEPTION_H
+/**
+ * Exceptions thrown by Assertion
+ */
 
-describe(TestSuite, []() {});
+#include <string>
+#include <utility>
+
+namespace crossedfingers {
+class AssertionException : public std::exception {
+  public:
+    const std::string _message;
+
+    explicit AssertionException(std::string message): _message(std::move(message)) {}
+
+    [[nodiscard]] auto what() const noexcept -> const char * override {
+        return _message.c_str();
+    }
+};
+
+class SkipException final : public AssertionException {
+  public:
+    SkipException(): AssertionException("Test case skipped") {}
+};
+} // namespace crossedfingers
+
+#endif // ASSERTIONEXCEPTION_H

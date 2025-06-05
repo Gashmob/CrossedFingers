@@ -44,6 +44,8 @@ class Display {
 
     virtual auto printSkipCase(const std::string &case_name) -> void = 0;
 
+    virtual auto printWarningCase(const std::string &case_name) -> void = 0;
+
     virtual auto printFailCase(const std::string &case_name, const std::string &message) -> void = 0;
 
     virtual auto printSummary(
@@ -51,6 +53,7 @@ class Display {
         int assertion_count,
         const std::vector<std::string> &succeed_tests,
         const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &warning_tests,
         const std::map<std::string, std::string> &failed_tests
     ) -> void
         = 0;

@@ -24,6 +24,7 @@
 #include "crossedfingers/TestSuite.h"
 
 #include "crossedfingers/TestStatus.h"
+#include "crossedfingers/assert/AssertionException.h"
 
 #include <format>
 #include <utility>
@@ -37,6 +38,10 @@ auto TestSuite::run() const -> void {
     TestStatus::instance().beginSuite(_name);
     try {
         _callback();
+    } catch (SkipException &) {
+        TestStatus::instance().skip();
+    } catch (AssertionException &failure) {
+        TestStatus::instance().failure(failure._message);
     } catch (const std::exception &exception) {
         TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
     }

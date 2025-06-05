@@ -28,10 +28,12 @@
  */
 
 #include "TestRun.h"
-#include "TestSuite.h"
+#include "assert/assert.h"
 
-#define describe(name, callback) const auto name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+#define describe(name, callback) const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, callback)
 
-#define it(name, callback) crossedfingers::TestRun::instance().addCase(name, callback)
+inline auto it(const std::string &name, const std::function<void()> &callback) -> void {
+    crossedfingers::TestRun::instance().addCase(name, callback);
+}
 
 #endif // TEST_H

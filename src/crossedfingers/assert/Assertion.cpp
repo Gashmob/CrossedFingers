@@ -21,6 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
+#include "crossedfingers/assert/Assertion.h"
 
-describe(RunCommand, []() {});
+#include "crossedfingers/TestStatus.h"
+#include "crossedfingers/assert/AssertionException.h"
+
+using namespace crossedfingers;
+
+auto Assertion::_skip() -> void {
+    throw SkipException();
+}
+
+auto Assertion::_fail(const std::string &message) -> void {
+    throw AssertionException(message);
+}
+
+auto Assertion::success() noexcept -> void {
+    TestStatus::instance().success();
+}

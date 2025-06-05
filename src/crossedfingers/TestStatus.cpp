@@ -23,6 +23,9 @@
  */
 #include "crossedfingers/TestStatus.h"
 
+#include "crossedfingers/assert/Assertion.h"
+#include "crossedfingers/utils.h"
+
 #include <stdexcept>
 
 using namespace crossedfingers;
@@ -39,6 +42,8 @@ auto TestStatus::setDisplay(Display *display) -> void {
 auto TestStatus::beginSuite(const std::string &test_suite) -> void {
     _display->printBeginSuite(test_suite);
     _current_suite.push(test_suite);
+    _awaited_exception         = std::nullopt;
+    _awaited_exception_message = std::nullopt;
 }
 
 auto TestStatus::beginCase(const std::string &test_case) -> void {
@@ -47,13 +52,20 @@ auto TestStatus::beginCase(const std::string &test_case) -> void {
     }
 
     _display->printBeginCase(test_case);
-    _current_case = test_case;
+    _current_case              = test_case;
+    _awaited_exception         = std::nullopt;
+    _awaited_exception_message = std::nullopt;
     _test_count++;
 }
 
 auto TestStatus::endCase() -> void {
     if (! _current_case.has_value()) {
-        // Test was probably skipped or failed
+        // The test was probably skipped or failed
+        return;
+    }
+
+    if (_current_assertion_count == 0) {
+        warning("Test did not perform any assertions");
         return;
     }
 
@@ -90,9 +102,22 @@ auto TestStatus::skip() -> void {
 
     _assertion_count += _current_assertion_count;
     _current_assertion_count = 0;
-    _succeed_tests.push_back(_current_case.value());
+    _skipped_tests.push_back(_current_case.value());
 
     _display->printSkipCase(_current_case.value());
+    _current_case = std::nullopt;
+}
+
+auto TestStatus::warning(const std::string &message) -> void {
+    if (! _current_case.has_value()) {
+        throw std::logic_error("Not in a test case, should be the case");
+    }
+
+    _assertion_count += _current_assertion_count;
+    _current_assertion_count = 0;
+    _warning_tests.emplace(_current_case.value(), message);
+
+    _display->printWarningCase(_current_case.value());
     _current_case = std::nullopt;
 }
 
@@ -109,8 +134,32 @@ auto TestStatus::failure(const std::string &message) -> void {
     _current_case = std::nullopt;
 }
 
+auto TestStatus::checkAwaitedException(const std::exception &exception) const -> void {
+    if (! _awaited_exception.has_value()) {
+        throw;
+    }
+
+    if (typeid(exception) != *_awaited_exception.value()) {
+        Assertion::_fail(
+            "Awaited for " + getTypeName(_awaited_exception.value()) + " exception but got " + getTypeName(exception)
+        );
+    }
+
+    if (_awaited_exception_message.has_value()
+        && ! std::string(exception.what()).contains(_awaited_exception_message.value())) {
+        Assertion::_fail(
+            "Exception message doesn't contains '" + _awaited_exception_message.value() + "', got '"
+            + std::string(exception.what()) + "'."
+        );
+    }
+
+    Assertion::success();
+}
+
 auto TestStatus::summary() const -> void {
-    _display->printSummary(_test_count, _assertion_count, _succeed_tests, _skipped_tests, _failed_tests);
+    _display->printSummary(
+        _test_count, _assertion_count, _succeed_tests, _skipped_tests, _warning_tests, _failed_tests
+    );
 }
 
 auto TestStatus::returnValue() const noexcept -> int {

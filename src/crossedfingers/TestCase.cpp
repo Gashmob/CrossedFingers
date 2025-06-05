@@ -24,6 +24,7 @@
 #include "crossedfingers/TestCase.h"
 
 #include "crossedfingers/TestStatus.h"
+#include "crossedfingers/assert/AssertionException.h"
 #include "crossedfingers/display/OutputWrapper.h"
 
 #include <format>
@@ -37,7 +38,15 @@ TestCase::TestCase(std::string name, const std::function<void()> &callback)
 auto TestCase::run() const -> void {
     TestStatus::instance().beginCase(_name);
     try {
-        _callback();
+        try {
+            _callback();
+        } catch (const std::exception &exception) {
+            TestStatus::instance().checkAwaitedException(exception);
+        }
+    } catch (SkipException &) {
+        TestStatus::instance().skip();
+    } catch (AssertionException &failure) {
+        TestStatus::instance().failure(failure._message);
     } catch (const std::exception &exception) {
         TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
     }

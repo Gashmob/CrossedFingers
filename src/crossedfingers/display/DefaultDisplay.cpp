@@ -49,6 +49,10 @@ auto DefaultDisplay::printSkipCase(const std::string &case_name) -> void {
     OutputWrapper::print("SKIP\n");
 }
 
+auto DefaultDisplay::printWarningCase(const std::string &case_name) -> void {
+    OutputWrapper::print("WARNING\n");
+}
+
 auto DefaultDisplay::printFailCase(const std::string &case_name, const std::string &message) -> void {
     OutputWrapper::print(std::format("FAILURE\n    {}\n", message));
 }
@@ -58,6 +62,7 @@ auto DefaultDisplay::printSummary(
     int assertion_count,
     const std::vector<std::string> &succeed_tests,
     const std::vector<std::string> &skipped_tests,
+    const std::map<std::string, std::string> &warning_tests,
     const std::map<std::string, std::string> &failed_tests
 ) -> void {
     OutputWrapper::print(std::format(
@@ -65,6 +70,7 @@ auto DefaultDisplay::printSummary(
     TEST COUNT: {}
     SUCCESS: {}
     SKIP: {}
+    WARNING: {}
     FAILURES: {}
     TOTAL ASSERTIONS: {}
 
@@ -72,11 +78,22 @@ auto DefaultDisplay::printSummary(
         test_count,
         succeed_tests.size(),
         skipped_tests.size(),
+        warning_tests.size(),
         failed_tests.size(),
         assertion_count
     ));
 
-    for (const auto &[test_name, message] : failed_tests) {
-        OutputWrapper::print(std::format("  {}\n    {}\n\n", test_name, message));
+    if (! warning_tests.empty()) {
+        OutputWrapper::print("Warning tests:\n\n");
+        for (const auto &[test_name, message] : warning_tests) {
+            OutputWrapper::print(std::format("  {}\n    {}\n\n", test_name, message));
+        }
+    }
+
+    if (! failed_tests.empty()) {
+        OutputWrapper::print("Failed tests:\n\n");
+        for (const auto &[test_name, message] : failed_tests) {
+            OutputWrapper::print(std::format("  {}\n    {}\n\n", test_name, message));
+        }
     }
 }

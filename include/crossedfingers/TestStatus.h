@@ -54,7 +54,20 @@ class TestStatus final {
 
     auto skip() -> void;
 
+    auto warning(const std::string &message) -> void;
+
     auto failure(const std::string &message) -> void;
+
+    template<typename ExceptionType> auto shouldCatchException(const std::string &message) -> void {
+        _awaited_exception = &typeid(ExceptionType);
+        if (! message.empty()) {
+            _awaited_exception_message = message;
+        } else {
+            _awaited_exception_message = std::nullopt;
+        }
+    }
+
+    auto checkAwaitedException(const std::exception &exception) const -> void;
 
     auto summary() const -> void;
 
@@ -66,11 +79,15 @@ class TestStatus final {
     int _current_assertion_count = 0;
     std::vector<std::string> _succeed_tests;
     std::vector<std::string> _skipped_tests;
+    std::map<std::string, std::string> _warning_tests;
     std::map<std::string, std::string> _failed_tests;
 
     std::stack<std::string> _current_suite;
     std::optional<std::string> _current_case = std::nullopt;
-    Display *_display = nullptr;
+    Display *_display                        = nullptr;
+
+    std::optional<const std::type_info *> _awaited_exception = std::nullopt;
+    std::optional<std::string> _awaited_exception_message    = std::nullopt;
 };
 } // namespace crossedfingers
 
