@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,6 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
 
-describe(ListCommand, []() {});
+#ifndef UTILS_H
+#define UTILS_H
+
+#include <cxxabi.h>
+#include <string>
+
+namespace crossedfingers {
+template<typename Type> auto getTypeName() -> std::string {
+    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
+}
+
+template<typename Type> auto getTypeName(const Type &_) -> std::string {
+    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
+}
+
+inline auto getTypeName(const std::type_info *type) -> std::string {
+    return abi::__cxa_demangle(type->name(), nullptr, nullptr, nullptr);
+}
+} // namespace crossedfingers
+
+#endif // UTILS_H

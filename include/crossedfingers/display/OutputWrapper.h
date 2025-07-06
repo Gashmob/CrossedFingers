@@ -21,38 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/OutputBuffer.h"
+#ifndef OUTPUTWRAPPER_H
+#define OUTPUTWRAPPER_H
+/**
+ * Wrapper around iostream
+ */
 
-#include <iostream>
+#include <sstream>
+#include <string>
 
-using namespace crossedfingers;
+namespace crossedfingers {
+class OutputWrapper final {
+  public:
+    static auto init() -> OutputWrapper &;
 
-auto OutputBuffer::instance() -> OutputBuffer & {
-    static OutputBuffer instance;
-    return instance;
-}
+    static auto print(const std::string &str) noexcept -> void;
 
-auto OutputBuffer::redirect(const bool redirected) -> void {
-    if (_redirected == redirected) {
-        return;
-    }
+  private:
+    std::streambuf *_out;
+    std::stringstream _redirection;
 
-    _redirected = redirected;
-    if (_redirected) {
-        _out = std::cout.rdbuf(_redirection.rdbuf());
-    } else {
-        std::cout.rdbuf(_out);
-    }
-}
+    OutputWrapper();
 
-auto OutputBuffer::print(const std::string &str) noexcept -> void {
-    fprintf(stdout, "%s", str.c_str());
-}
+    ~OutputWrapper();
+};
+} // namespace crossedfingers
 
-OutputBuffer::OutputBuffer(): _redirected(false), _out(std::cout.rdbuf()) {}
-
-OutputBuffer::~OutputBuffer() {
-    if (_redirected) {
-        std::cout.rdbuf(_out);
-    }
-}
+#endif // OUTPUTWRAPPER_H

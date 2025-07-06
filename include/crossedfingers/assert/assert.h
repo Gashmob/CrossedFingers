@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,16 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
-#include <iostream>
+#ifndef ASSERT_H
+#define ASSERT_H
+/**
+ * Collection of assertions
+ */
 
-describe(TestRun, []() {
-    std::cout << "Hello from the test\n";
-    describe(addSuite, []() {
-        std::cout << "Hello from a nested test\n";
+#include "Assertion.h"
 
-        describe(ThirdLevelDescribe, []() {
-            std::cout << "Hello from a third level nested test\n";
-        });
-    });
-});
+#define skip() crossedfingers::Assertion::_skip()
+
+#define fail(message) crossedfingers::Assertion::_fail(message)
+
+namespace crossedfingers {
+template<typename ActualType> [[nodiscard]] auto assertThat(const ActualType &actual) -> AssertionMatcher<ActualType> {
+    return AssertionMatcher(actual);
+}
+
+template<typename ExceptionType> auto expectException(const std::string &message = "") -> void {
+    TestStatus::instance().shouldCatchException<ExceptionType>(message);
+}
+} // namespace crossedfingers
+
+#endif // ASSERT_H

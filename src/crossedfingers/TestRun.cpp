@@ -24,10 +24,12 @@
 #include "crossedfingers/TestRun.h"
 
 #include "crossedfingers/TestCase.h"
+#include "crossedfingers/TestStatus.h"
 #include "crossedfingers/commands/ListCommand.h"
 #include "crossedfingers/commands/RunCommand.h"
 #include "utils.hpp"
 
+#include <format>
 #include <iostream>
 #include <yeschief.h>
 
@@ -46,20 +48,19 @@ auto TestRun::run(const int argc, char **argv) -> int {
     const auto program_name = std::string(argv[0]);
     yeschief::CLI cli(program_name, "This program contains tests written with CrossedFingers 🤞");
 
-    RunCommand run(this);
-    cli.addCommand(&run);
-    ListCommand list(this);
-    cli.addCommand(&list);
-    yeschief::HelpCommand help(&cli);
-    cli.addCommand(&help);
+    RunCommand run_command(this);
+    cli.addCommand(&run_command);
+    ListCommand list_command(this);
+    cli.addCommand(&list_command);
+    yeschief::HelpCommand help_command(&cli);
+    cli.addCommand(&help_command);
 
-    const auto results = cli.run(argc, argv);
-    if (! results.has_value()) {
+    if (const auto results = cli.run(argc, argv); ! results.has_value()) {
         cli.help(std::cout);
         return 1;
     }
 
-    return run.run(yeschief::CLIResults({}));
+    return run_command.run(yeschief::CLIResults({}));
 }
 
 auto TestRun::addSuite(const std::string &name, const std::function<void()> &callback) -> int {
@@ -95,7 +96,9 @@ auto TestRun::runSuites() -> int {
         _suite_context.pop_back();
     }
 
-    return 0;
+    TestStatus::instance().summary();
+
+    return TestStatus::instance().returnValue();
 }
 
 auto TestRun::listSuites() -> int {

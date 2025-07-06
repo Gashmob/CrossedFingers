@@ -21,20 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include "../../src/crossedfingers/utils.hpp"
+
 #include <crossedfingers/test.h>
+
+using namespace crossedfingers;
 
 describe(utils, []() {
     describe(join, []() {
         it("Should returns empty if vector is empty", []() {
-
+            assertThat(join({}, ", ")).isEqualTo("");
         });
 
         it("Should join with empty string", []() {
-
+            assertThat(join({"a", "b", "c"}, "")).isEqualTo("abc");
         });
 
         it("Should join with given delimiter", []() {
+            assertThat(join({"a", "b", "c"}, ", ")).isEqualTo("a, b, c");
+        });
+    });
 
+    describe(getTypeName, []() {
+        it("Should return type name when given by template", []() {
+            assertThat(getTypeName<int>()).isEqualTo("int");
+            assertThat(getTypeName<bool>()).isEqualTo("bool");
+            assertThat(getTypeName<char>()).isEqualTo("char");
+            assertThat(getTypeName<std::string>()).hasSubString("string");
+            assertThat(getTypeName<AssertionException>()).isEqualTo("crossedfingers::AssertionException");
+        });
+
+        it("Should return type name when given by value", []() {
+            assertThat(getTypeName(3)).isEqualTo("int");
+            assertThat(getTypeName(true)).isEqualTo("bool");
+            assertThat(getTypeName('c')).isEqualTo("char");
+            assertThat(getTypeName(std::string("hello"))).hasSubString("string");
+            assertThat(getTypeName(AssertionException("hello"))).isEqualTo("crossedfingers::AssertionException");
+        });
+
+        it("Should return type name when given by typeid", []() {
+            assertThat(getTypeName(&typeid(int))).isEqualTo("int");
+            assertThat(getTypeName(&typeid(3))).isEqualTo("int");
+            assertThat(getTypeName(&typeid(bool))).isEqualTo("bool");
+            assertThat(getTypeName(&typeid(true))).isEqualTo("bool");
+            assertThat(getTypeName(&typeid(char))).isEqualTo("char");
+            assertThat(getTypeName(&typeid('c'))).isEqualTo("char");
+            assertThat(getTypeName<std::string>()).hasSubString("string");
+            assertThat(getTypeName(std::string("hello"))).hasSubString("string");
+            assertThat(getTypeName(&typeid(AssertionException))).isEqualTo("crossedfingers::AssertionException");
+            assertThat(getTypeName(&typeid(AssertionException("hello"))))
+                .isEqualTo("crossedfingers::AssertionException");
         });
     });
 });

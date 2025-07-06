@@ -21,33 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef OUTPUTBUFFER_H
-#define OUTPUTBUFFER_H
+#ifndef ASSERTIONEXCEPTION_H
+#define ASSERTIONEXCEPTION_H
 /**
- * Buffer and redirect program output
+ * Exceptions thrown by Assertion
  */
 
-#include <sstream>
 #include <string>
+#include <utility>
 
 namespace crossedfingers {
-class OutputBuffer final {
+class AssertionException : public std::exception {
   public:
-    static auto instance() -> OutputBuffer &;
+    const std::string _message;
 
-    auto redirect(bool redirected) -> void;
+    explicit AssertionException(std::string message): _message(std::move(message)) {}
 
-    static auto print(const std::string &str) noexcept -> void;
+    [[nodiscard]] auto what() const noexcept -> const char * override {
+        return _message.c_str();
+    }
+};
 
-  private:
-    bool _redirected;
-    std::streambuf *_out;
-    std::stringstream _redirection;
-
-    OutputBuffer();
-
-    ~OutputBuffer();
+class SkipException final : public AssertionException {
+  public:
+    SkipException(): AssertionException("Test case skipped") {}
 };
 } // namespace crossedfingers
 
-#endif // OUTPUTBUFFER_H
+#endif // ASSERTIONEXCEPTION_H

@@ -23,11 +23,14 @@
  */
 #include "crossedfingers/commands/RunCommand.h"
 
-#include "crossedfingers/OutputBuffer.h"
+#include "crossedfingers/TestStatus.h"
+#include "crossedfingers/display/DefaultDisplay.h"
+#include "crossedfingers/display/OutputWrapper.h"
 
 using namespace crossedfingers;
 
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
-    OutputBuffer::instance().redirect(true);
+    OutputWrapper::init();
+    TestStatus::instance().setDisplay(new DefaultDisplay());
     return _test_run->runSuites();
 }

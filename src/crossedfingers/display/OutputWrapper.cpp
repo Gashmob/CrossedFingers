@@ -21,6 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/test.h>
+#include "crossedfingers/display/OutputWrapper.h"
 
-describe(TestCase, []() {});
+#include <iostream>
+
+using namespace crossedfingers;
+
+auto OutputWrapper::init() -> OutputWrapper & {
+    static OutputWrapper instance;
+    return instance;
+}
+
+auto OutputWrapper::print(const std::string &str) noexcept -> void {
+    fprintf(stdout, "%s", str.c_str());
+}
+
+OutputWrapper::OutputWrapper() {
+    _out = std::cout.rdbuf(_redirection.rdbuf());
+}
+
+OutputWrapper::~OutputWrapper() {
+    std::cout.rdbuf(_out);
+}
