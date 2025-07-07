@@ -16,7 +16,7 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31.4.1
       - name: Run tests
-        run: nix-shell --run 'run_unit_tests'
+        run: nix develop --command run_unit_tests
 
   clang-format:
     name: "Run clang-format"
@@ -27,9 +27,9 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31.4.1
       - name: Run clang-format
-        run: nix-shell --run 'run_clang-format'
+        run: nix develop --command run_clang-format
       - name: Check no changes
-        run: nix-shell --run 'check_no_changes'
+        run: nix develop --command check_no_changes
 
   build-documentation:
     name: "Build documentation"
@@ -40,4 +40,4 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31.4.1
       - name: Build documentation
-        run: nix-shell --run 'generate_doxygen'
+        run: nix develop --command generate_doxygen

@@ -6,9 +6,9 @@
 
 stdenv.mkDerivation {
   pname = "crossedfingers";
-  version = builtins.readFile ./../../VERSION;
+  version = builtins.readFile ./VERSION;
 
-  src = ./../..;
+  src = ./.;
 
   nativeBuildInputs = [ cmake ninja ];
   buildInputs = [ yeschief ];
