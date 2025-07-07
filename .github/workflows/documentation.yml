@@ -27,7 +27,7 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31.4.1
       - name: Build documentation
-        run: nix-shell --run 'generate_doxygen'
+        run: nix develop --command generate_doxygen
 
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
