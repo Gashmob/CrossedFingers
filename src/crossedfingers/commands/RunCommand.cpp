@@ -32,5 +32,5 @@ using namespace crossedfingers;
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
     OutputWrapper::init();
     TestStatus::instance().setDisplay(new DefaultDisplay());
-    return _test_run->runSuites();
+    return _test_run->runTests();
 }

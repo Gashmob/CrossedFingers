@@ -35,8 +35,8 @@ using namespace crossedfingers;
 TestCase::TestCase(std::string name, const std::function<void()> &callback)
     : _name(std::move(name)), _callback(callback) {}
 
-auto TestCase::run() const -> void {
-    TestStatus::instance().beginCase(_name);
+auto TestCase::run(const std::string &current_name) const -> void {
+    TestStatus::instance().beginCase(current_name + "::" + _name);
     try {
         try {
             _callback();
@@ -53,6 +53,6 @@ auto TestCase::run() const -> void {
     TestStatus::instance().endCase();
 }
 
-auto TestCase::list() const -> void {
-    OutputWrapper::print(_name + "\n");
+auto TestCase::list(const std::string &current_name) const -> void {
+    OutputWrapper::print(current_name + "::" + _name + "\n");
 }

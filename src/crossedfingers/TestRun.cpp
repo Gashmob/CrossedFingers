@@ -23,11 +23,9 @@
  */
 #include "crossedfingers/TestRun.h"
 
-#include "crossedfingers/TestCase.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/commands/ListCommand.h"
 #include "crossedfingers/commands/RunCommand.h"
-#include "utils.hpp"
 
 #include <format>
 #include <iostream>
@@ -41,7 +39,6 @@ auto TestRun::instance() -> TestRun & {
 }
 
 auto TestRun::run(const int argc, char **argv) -> int {
-    _mode = Mode::RUN;
     if (argc < 1) {
         throw std::runtime_error("Bad argument count given");
     }
@@ -64,36 +61,33 @@ auto TestRun::run(const int argc, char **argv) -> int {
 }
 
 auto TestRun::addSuite(const std::string &name, const std::function<void()> &callback) -> int {
-    _suite_context.push_back(name);
-    const auto full_name = join(_suite_context, ".");
-    if (_mode == Mode::SETUP) {
-        _root_suites.emplace(full_name, std::make_shared<TestSuite>(full_name, callback));
-    } else if (_mode == Mode::RUN) {
-        TestSuite(full_name, callback).run();
-    } else if (_mode == Mode::LIST) {
-        TestSuite(full_name, callback).list();
+    const auto previous = _current_suite;
+
+    if (_current_suite == nullptr) {
+        auto test_suite = std::make_shared<TestSuite>(name);
+        _root_suites.emplace_back(test_suite);
+        _current_suite = test_suite.get();
+    } else {
+        _current_suite = _current_suite->addSubSuite(name);
     }
-    _suite_context.pop_back();
+
+    callback();
+    _current_suite = previous;
+
     return 0;
 }
 
 auto TestRun::addCase(const std::string &name, const std::function<void()> &callback) const -> void {
-    const auto full_name = join(_suite_context, ".") + "::" + name;
-    if (_mode == Mode::SETUP) {
-        throw std::logic_error("Hmmm, there is something strange : a case were added during setup");
+    if (_current_suite == nullptr) {
+        throw std::logic_error("Hmmm, there is something strange : a test case were added in global context");
     }
-    if (_mode == Mode::RUN) {
-        TestCase(full_name, callback).run();
-    } else if (_mode == Mode::LIST) {
-        TestCase(full_name, callback).list();
-    }
+
+    _current_suite->addTestCase(name, callback);
 }
 
-auto TestRun::runSuites() -> int {
-    for (const auto &[name, suite] : _root_suites) {
-        _suite_context.push_back(name);
-        suite->run();
-        _suite_context.pop_back();
+auto TestRun::runTests() const -> int {
+    for (const auto &suite : _root_suites) {
+        suite->run("");
     }
 
     TestStatus::instance().summary();
@@ -101,12 +95,9 @@ auto TestRun::runSuites() -> int {
     return TestStatus::instance().returnValue();
 }
 
-auto TestRun::listSuites() -> int {
-    _mode = Mode::LIST;
-    for (const auto &[name, suite] : _root_suites) {
-        _suite_context.push_back(name);
-        suite->list();
-        _suite_context.pop_back();
+auto TestRun::listTests() const -> int {
+    for (const auto &suite : _root_suites) {
+        suite->list("");
     }
     return 0;
 }

@@ -31,23 +31,49 @@
 
 using namespace crossedfingers;
 
-TestSuite::TestSuite(std::string name, const std::function<void()> &callback)
-    : _name(std::move(name)), _callback(callback) {}
+TestSuite::TestSuite(std::string name): _name(std::move(name)) {}
 
-auto TestSuite::run() const -> void {
-    TestStatus::instance().beginSuite(_name);
-    try {
-        _callback();
-    } catch (SkipException &) {
-        TestStatus::instance().skip();
-    } catch (AssertionException &failure) {
-        TestStatus::instance().failure(failure._message);
-    } catch (const std::exception &exception) {
-        TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
+auto TestSuite::addSubSuite(const std::string &name) -> TestSuite * {
+    auto test_suite = std::make_shared<TestSuite>(name);
+    _sub_suites.emplace_back(test_suite);
+    return test_suite.get();
+}
+
+auto TestSuite::addTestCase(const std::string &name, const std::function<void()> &callback) -> void {
+    _test_cases.emplace_back(std::make_unique<TestCase>(name, callback));
+}
+
+auto TestSuite::run(const std::string &current_name) const -> void {
+    const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
+    TestStatus::instance().beginSuite(suite_fullname);
+
+    for (const auto &suite : _sub_suites) {
+        suite->run(suite_fullname);
     }
+
+    for (const auto &test_case : _test_cases) {
+        try {
+            test_case->run(suite_fullname);
+        } catch (SkipException &) {
+            TestStatus::instance().skip();
+        } catch (AssertionException &failure) {
+            TestStatus::instance().failure(failure._message);
+        } catch (const std::exception &exception) {
+            TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
+        }
+    }
+
     TestStatus::instance().endSuite();
 }
 
-auto TestSuite::list() const -> void {
-    _callback();
+auto TestSuite::list(const std::string &current_name) const -> void {
+    const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
+
+    for (const auto &suite : _sub_suites) {
+        suite->list(suite_fullname);
+    }
+
+    for (const auto &test_case : _test_cases) {
+        test_case->list(suite_fullname);
+    }
 }

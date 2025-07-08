@@ -30,7 +30,6 @@
 #include "TestSuite.h"
 
 #include <functional>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -39,12 +38,6 @@ namespace crossedfingers {
 class TestRun final {
     friend class RunCommand;
     friend class ListCommand;
-
-    enum class Mode {
-        SETUP,
-        RUN,
-        LIST,
-    };
 
   public:
     static auto instance() -> TestRun &;
@@ -56,15 +49,14 @@ class TestRun final {
     auto addCase(const std::string &name, const std::function<void()> &callback) const -> void;
 
   private:
-    std::vector<std::string> _suite_context;
-    std::map<std::string, std::shared_ptr<TestSuite>> _root_suites;
-    Mode _mode;
+    TestSuite *_current_suite;
+    std::vector<std::shared_ptr<TestSuite>> _root_suites;
 
-    TestRun(): _mode(Mode::SETUP) {}
+    TestRun(): _current_suite(nullptr) {}
 
-    [[nodiscard]] auto runSuites() -> int;
+    [[nodiscard]] auto runTests() const -> int;
 
-    [[nodiscard]] auto listSuites() -> int;
+    [[nodiscard]] auto listTests() const -> int;
 };
 } // namespace crossedfingers
 
