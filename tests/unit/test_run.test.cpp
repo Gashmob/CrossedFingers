@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,40 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TESTSUITE_H
-#define TESTSUITE_H
-/**
- * Holds test cases
- */
+#include "crossedfingers/test.h"
 
-#include "TestCase.h"
+using namespace crossedfingers;
 
-#include <memory>
-#include <optional>
-#include <string>
-#include <vector>
+describe(test_run, []() {
+    describe(before, []() {
+        int some_value = 0;
 
-namespace crossedfingers {
-class TestSuite final {
-  public:
-    explicit TestSuite(std::string name);
+        before([&some_value]() {
+            some_value = 2;
+        });
 
-    auto addSubSuite(const std::string &name) -> TestSuite *;
-
-    auto addTestCase(const std::string &name, const std::function<void()> &callback) -> void;
-
-    auto setBefore(const std::function<void()> &callback) -> void;
-
-    auto run(const std::string &current_name) const -> void;
-
-    auto list(const std::string &current_name) const -> void;
-
-  private:
-    std::string _name;
-    std::optional<std::function<void()>> _before;
-    std::vector<std::shared_ptr<TestSuite>> _sub_suites;
-    std::vector<std::unique_ptr<TestCase>> _test_cases;
-};
-} // namespace crossedfingers
-
-#endif // TESTSUITE_H
+        it("Should call before and set some_value to 2", [&some_value]() {
+            assertThat(some_value).isEqualTo(2);
+        });
+    });
+});

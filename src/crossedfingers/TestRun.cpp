@@ -85,6 +85,14 @@ auto TestRun::addCase(const std::string &name, const std::function<void()> &call
     _current_suite->addTestCase(name, callback);
 }
 
+auto TestRun::addBefore(const std::function<void()> &callback) const -> void {
+    if (_current_suite == nullptr) {
+        throw std::logic_error("Hmmm, there is something strange : a before() were added in global context");
+    }
+
+    _current_suite->setBefore(callback);
+}
+
 auto TestRun::runTests() const -> int {
     for (const auto &suite : _root_suites) {
         suite->run("");

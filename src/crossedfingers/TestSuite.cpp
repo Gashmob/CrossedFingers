@@ -31,7 +31,7 @@
 
 using namespace crossedfingers;
 
-TestSuite::TestSuite(std::string name): _name(std::move(name)) {}
+TestSuite::TestSuite(std::string name): _name(std::move(name)), _before(std::nullopt) {}
 
 auto TestSuite::addSubSuite(const std::string &name) -> TestSuite * {
     auto test_suite = std::make_shared<TestSuite>(name);
@@ -43,9 +43,21 @@ auto TestSuite::addTestCase(const std::string &name, const std::function<void()>
     _test_cases.emplace_back(std::make_unique<TestCase>(name, callback));
 }
 
+auto TestSuite::setBefore(const std::function<void()> &callback) -> void {
+    if (_before.has_value()) {
+        throw std::logic_error("Cannot setup two before() in the same test suite");
+    }
+
+    _before = callback;
+}
+
 auto TestSuite::run(const std::string &current_name) const -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
     TestStatus::instance().beginSuite(suite_fullname);
+
+    if (_before.has_value()) {
+        _before.value()();
+    }
 
     for (const auto &suite : _sub_suites) {
         suite->run(suite_fullname);

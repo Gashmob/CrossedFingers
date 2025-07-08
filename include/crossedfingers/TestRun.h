@@ -48,6 +48,8 @@ class TestRun final {
 
     auto addCase(const std::string &name, const std::function<void()> &callback) const -> void;
 
+    auto addBefore(const std::function<void()> &callback) const -> void;
+
   private:
     TestSuite *_current_suite;
     std::vector<std::shared_ptr<TestSuite>> _root_suites;
