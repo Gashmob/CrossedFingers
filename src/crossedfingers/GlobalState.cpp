@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,40 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef TESTSUITE_H
-#define TESTSUITE_H
-/**
- * Holds test cases
- */
+#include "crossedfingers/GlobalState.h"
 
-#include "TestCase.h"
+using namespace crossedfingers;
 
-#include <memory>
-#include <optional>
-#include <string>
-#include <vector>
-
-namespace crossedfingers {
-class TestSuite final {
-  public:
-    explicit TestSuite(std::string name);
-
-    auto addSubSuite(const std::string &name) -> TestSuite *;
-
-    auto addTestCase(const std::string &name, const std::function<void()> &callback) -> void;
-
-    auto setBefore(const std::function<void()> &callback) -> void;
-
-    auto run(const std::string &current_name) -> void;
-
-    auto list(const std::string &current_name) const -> void;
-
-  private:
-    std::string _name;
-    std::optional<std::function<void()>> _before;
-    std::vector<TestSuite> _sub_suites;
-    std::vector<TestCase> _test_cases;
-};
-} // namespace crossedfingers
-
-#endif // TESTSUITE_H
+int GlobalState::random_seed = 0;

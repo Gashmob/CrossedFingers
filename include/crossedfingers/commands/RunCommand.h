@@ -44,6 +44,8 @@ class RunCommand final : public yeschief::Command {
         return "Run tests contained in the program";
     }
 
+    auto setup(yeschief::CLI &cli) -> void override;
+
     auto run(const yeschief::CLIResults &results) -> int override;
 
   private:

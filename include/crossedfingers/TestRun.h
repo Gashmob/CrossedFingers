@@ -52,11 +52,11 @@ class TestRun final {
 
   private:
     TestSuite *_current_suite;
-    std::vector<std::shared_ptr<TestSuite>> _root_suites;
+    std::vector<TestSuite> _root_suites;
 
     TestRun(): _current_suite(nullptr) {}
 
-    [[nodiscard]] auto runTests() const -> int;
+    [[nodiscard]] auto runTests() -> int;
 
     [[nodiscard]] auto listTests() const -> int;
 };

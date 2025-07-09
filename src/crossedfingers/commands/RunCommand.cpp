@@ -23,14 +23,31 @@
  */
 #include "crossedfingers/commands/RunCommand.h"
 
+#include "../../../include/crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/display/DefaultDisplay.h"
 #include "crossedfingers/display/OutputWrapper.h"
 
 using namespace crossedfingers;
 
+auto RunCommand::setup(yeschief::CLI &cli) -> void {
+    cli.addOption<int>(
+        "random-seed",
+        "Seed to shuffle test run order",
+        {
+          .required   = false,
+          .value_help = "<number>",
+        }
+    );
+}
+
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
     OutputWrapper::init();
     TestStatus::instance().setDisplay(new DefaultDisplay());
+
+    const auto seed = std::any_cast<int>(results.get("random-seed").value_or(static_cast<int>(std::time(nullptr))));
+    OutputWrapper::print("Using seed: " + std::to_string(seed) + "\n\n");
+    GlobalState::random_seed = seed;
+
     return _test_run->runTests();
 }

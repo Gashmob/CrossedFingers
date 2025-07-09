@@ -23,12 +23,14 @@
  */
 #include "crossedfingers/TestRun.h"
 
+#include "../../include/crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/commands/ListCommand.h"
 #include "crossedfingers/commands/RunCommand.h"
 
 #include <format>
 #include <iostream>
+#include <random>
 #include <yeschief.h>
 
 using namespace crossedfingers;
@@ -64,9 +66,8 @@ auto TestRun::addSuite(const std::string &name, const std::function<void()> &cal
     const auto previous = _current_suite;
 
     if (_current_suite == nullptr) {
-        auto test_suite = std::make_shared<TestSuite>(name);
-        _root_suites.emplace_back(test_suite);
-        _current_suite = test_suite.get();
+        auto &test_suite = _root_suites.emplace_back(name);
+        _current_suite   = &test_suite;
     } else {
         _current_suite = _current_suite->addSubSuite(name);
     }
@@ -93,9 +94,11 @@ auto TestRun::addBefore(const std::function<void()> &callback) const -> void {
     _current_suite->setBefore(callback);
 }
 
-auto TestRun::runTests() const -> int {
-    for (const auto &suite : _root_suites) {
-        suite->run("");
+auto TestRun::runTests() -> int {
+    std::mt19937_64 generator(GlobalState::random_seed);
+    std::shuffle(_root_suites.begin(), _root_suites.end(), generator);
+    for (auto &suite : _root_suites) {
+        suite.run("");
     }
 
     TestStatus::instance().summary();
@@ -105,7 +108,7 @@ auto TestRun::runTests() const -> int {
 
 auto TestRun::listTests() const -> int {
     for (const auto &suite : _root_suites) {
-        suite->list("");
+        suite.list("");
     }
     return 0;
 }

@@ -23,10 +23,12 @@
  */
 #include "crossedfingers/TestSuite.h"
 
+#include "../../include/crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/assert/AssertionException.h"
 
 #include <format>
+#include <random>
 #include <utility>
 
 using namespace crossedfingers;
@@ -34,13 +36,12 @@ using namespace crossedfingers;
 TestSuite::TestSuite(std::string name): _name(std::move(name)), _before(std::nullopt) {}
 
 auto TestSuite::addSubSuite(const std::string &name) -> TestSuite * {
-    auto test_suite = std::make_shared<TestSuite>(name);
-    _sub_suites.emplace_back(test_suite);
-    return test_suite.get();
+    auto &test_suite = _sub_suites.emplace_back(name);
+    return &test_suite;
 }
 
 auto TestSuite::addTestCase(const std::string &name, const std::function<void()> &callback) -> void {
-    _test_cases.emplace_back(std::make_unique<TestCase>(name, callback));
+    _test_cases.emplace_back(name, callback);
 }
 
 auto TestSuite::setBefore(const std::function<void()> &callback) -> void {
@@ -51,7 +52,7 @@ auto TestSuite::setBefore(const std::function<void()> &callback) -> void {
     _before = callback;
 }
 
-auto TestSuite::run(const std::string &current_name) const -> void {
+auto TestSuite::run(const std::string &current_name) -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
     TestStatus::instance().beginSuite(suite_fullname);
 
@@ -59,13 +60,16 @@ auto TestSuite::run(const std::string &current_name) const -> void {
         _before.value()();
     }
 
-    for (const auto &suite : _sub_suites) {
-        suite->run(suite_fullname);
+    std::mt19937_64 generator(GlobalState::random_seed);
+    std::shuffle(_sub_suites.begin(), _sub_suites.end(), generator);
+    for (auto &suite : _sub_suites) {
+        suite.run(suite_fullname);
     }
 
+    std::shuffle(_test_cases.begin(), _test_cases.end(), generator);
     for (const auto &test_case : _test_cases) {
         try {
-            test_case->run(suite_fullname);
+            test_case.run(suite_fullname);
         } catch (SkipException &) {
             TestStatus::instance().skip();
         } catch (AssertionException &failure) {
@@ -82,10 +86,10 @@ auto TestSuite::list(const std::string &current_name) const -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
 
     for (const auto &suite : _sub_suites) {
-        suite->list(suite_fullname);
+        suite.list(suite_fullname);
     }
 
     for (const auto &test_case : _test_cases) {
-        test_case->list(suite_fullname);
+        test_case.list(suite_fullname);
     }
 }
