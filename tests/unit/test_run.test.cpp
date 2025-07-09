@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,25 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#include "crossedfingers/test.h"
 
-#include <string>
-#include <vector>
+using namespace crossedfingers;
 
-namespace crossedfingers {
-inline auto join(const std::vector<std::string> &strings, const std::string &delimiter) -> std::string {
-    if (strings.empty()) {
-        return "";
-    }
+describe(test_run, []() {
+    describe(before, []() {
+        int some_value = 0;
 
-    std::string result = *strings.begin();
-    for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
-        result += delimiter + *it;
-    }
+        before([&some_value]() {
+            some_value = 2;
+        });
 
-    return result;
-}
-}
-
-#endif //UTILS_HPP
+        it("Should call before and set some_value to 2", [&some_value]() {
+            assertThat(some_value).isEqualTo(2);
+        });
+    });
+});

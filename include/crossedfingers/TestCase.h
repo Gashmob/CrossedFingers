@@ -35,9 +35,9 @@ class TestCase final {
   public:
     TestCase(std::string name, const std::function<void()> &callback);
 
-    auto run() const -> void;
+    auto run(const std::string &current_name) const -> void;
 
-    auto list() const -> void;
+    auto list(const std::string &current_name) const -> void;
 
   private:
     std::string _name;

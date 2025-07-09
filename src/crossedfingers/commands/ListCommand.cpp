@@ -29,5 +29,5 @@ using namespace crossedfingers;
 
 auto ListCommand::run(const yeschief::CLIResults &results) -> int {
     OutputWrapper::init();
-    return _test_run->listSuites();
+    return _test_run->listTests();
 }
