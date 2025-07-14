@@ -52,6 +52,14 @@ auto TestSuite::setBefore(const std::function<void()> &callback) -> void {
     _before = callback;
 }
 
+auto TestSuite::setBeforeEach(const std::function<void()> &callback) -> void {
+    if (_before_each.has_value()) {
+        throw std::logic_error("Cannot setup two beforeEach() in the same test suite");
+    }
+
+    _before_each = callback;
+}
+
 auto TestSuite::run(const std::string &current_name) -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
     TestStatus::instance().beginSuite(suite_fullname);
@@ -63,11 +71,19 @@ auto TestSuite::run(const std::string &current_name) -> void {
     std::mt19937_64 generator(GlobalState::random_seed);
     std::shuffle(_sub_suites.begin(), _sub_suites.end(), generator);
     for (auto &suite : _sub_suites) {
+        if (_before_each.has_value()) {
+            _before_each.value()();
+        }
+
         suite.run(suite_fullname);
     }
 
     std::shuffle(_test_cases.begin(), _test_cases.end(), generator);
     for (const auto &test_case : _test_cases) {
+        if (_before_each.has_value()) {
+            _before_each.value()();
+        }
+
         try {
             test_case.run(suite_fullname);
         } catch (SkipException &) {

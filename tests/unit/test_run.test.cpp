@@ -37,4 +37,28 @@ describe(test_run, []() {
             assertThat(some_value).isEqualTo(2);
         });
     });
+
+    describe(beforeEach, []() {
+        int nb_run_1 = 0;
+        int nb_run_2 = 0;
+
+        beforeEach([&nb_run_2]() {
+            nb_run_2++;
+        });
+
+        it("Should work 1", [&nb_run_1, &nb_run_2]() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+
+        it("Should work 2", [&nb_run_1, &nb_run_2]() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+
+        it("Should work 3", [&nb_run_1, &nb_run_2]() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+    });
 });
