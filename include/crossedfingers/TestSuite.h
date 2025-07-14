@@ -47,6 +47,10 @@ class TestSuite final {
 
     auto setBeforeEach(const std::function<void()> &callback) -> void;
 
+    auto setAfter(const std::function<void()> &callback) -> void;
+
+    auto setAfterEach(const std::function<void()> &callback) -> void;
+
     auto run(const std::string &current_name) -> void;
 
     auto list(const std::string &current_name) const -> void;
@@ -55,6 +59,8 @@ class TestSuite final {
     std::string _name;
     std::optional<std::function<void()>> _before;
     std::optional<std::function<void()>> _before_each;
+    std::optional<std::function<void()>> _after;
+    std::optional<std::function<void()>> _after_each;
     std::vector<TestSuite> _sub_suites;
     std::vector<TestCase> _test_cases;
 };
