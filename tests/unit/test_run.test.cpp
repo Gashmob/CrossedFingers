@@ -25,38 +25,50 @@
 
 using namespace crossedfingers;
 
-describe(test_run, []() {
-    describe(before, []() {
-        int some_value = 0;
+static int i  = 2;
+static bool b = true;
+static char c = 'd';
 
-        before([&some_value]() {
+static int some_value = 0;
+
+static int nb_run_1 = 0;
+static int nb_run_2 = 0;
+
+describe(test_run, []() {
+    describe(context, []() {
+        it("Should work with global context", []() {
+            assertThat(i).isEqualTo(2);
+            assertThat(b).isEqualTo(true);
+            assertThat(c).isEqualTo('d');
+        });
+    });
+
+    describe(before, []() {
+        before([]() {
             some_value = 2;
         });
 
-        it("Should call before and set some_value to 2", [&some_value]() {
+        it("Should call before and set some_value to 2", []() {
             assertThat(some_value).isEqualTo(2);
         });
     });
 
     describe(beforeEach, []() {
-        int nb_run_1 = 0;
-        int nb_run_2 = 0;
-
-        beforeEach([&nb_run_2]() {
+        beforeEach([]() {
             nb_run_2++;
         });
 
-        it("Should work 1", [&nb_run_1, &nb_run_2]() {
+        it("Should work 1", []() {
             nb_run_1++;
             assertThat(nb_run_1).isEqualTo(nb_run_2);
         });
 
-        it("Should work 2", [&nb_run_1, &nb_run_2]() {
+        it("Should work 2", []() {
             nb_run_1++;
             assertThat(nb_run_1).isEqualTo(nb_run_2);
         });
 
-        it("Should work 3", [&nb_run_1, &nb_run_2]() {
+        it("Should work 3", []() {
             nb_run_1++;
             assertThat(nb_run_1).isEqualTo(nb_run_2);
         });
