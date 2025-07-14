@@ -49,4 +49,8 @@ inline auto after(const std::function<void()> &callback) -> void {
     crossedfingers::TestRun::instance().addAfter(callback);
 }
 
+inline auto afterEach(const std::function<void()> &callback) -> void {
+    crossedfingers::TestRun::instance().addAfterEach(callback);
+}
+
 #endif // TEST_H

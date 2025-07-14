@@ -68,6 +68,14 @@ auto TestSuite::setAfter(const std::function<void()> &callback) -> void {
     _after = callback;
 }
 
+auto TestSuite::setAfterEach(const std::function<void()> &callback) -> void {
+    if (_after_each.has_value()) {
+        throw std::logic_error("Cannot setup two afterEach() in the same test suite");
+    }
+
+    _after_each = callback;
+}
+
 auto TestSuite::run(const std::string &current_name) -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
     TestStatus::instance().beginSuite(suite_fullname);
@@ -84,6 +92,10 @@ auto TestSuite::run(const std::string &current_name) -> void {
         }
 
         suite.run(suite_fullname);
+
+        if (_after_each.has_value()) {
+            _after_each.value()();
+        }
     }
 
     std::shuffle(_test_cases.begin(), _test_cases.end(), generator);
@@ -100,6 +112,10 @@ auto TestSuite::run(const std::string &current_name) -> void {
             TestStatus::instance().failure(failure._message);
         } catch (const std::exception &exception) {
             TestStatus::instance().failure(std::format("Uncaught exception: {}", exception.what()));
+        }
+
+        if (_after_each.has_value()) {
+            _after_each.value()();
         }
     }
 

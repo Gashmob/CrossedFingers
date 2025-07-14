@@ -55,6 +55,10 @@ describe(test_run, []() {
     });
 
     describe(beforeEach, []() {
+        before([]() {
+            nb_run_1 = nb_run_2 = 0;
+        });
+
         beforeEach([]() {
             nb_run_2++;
         });
@@ -82,6 +86,31 @@ describe(test_run, []() {
 
         it("Should call after", []() {
             assertThat(true).isTrue(); // Just to avoid any problems with tests without assertions
+        });
+    });
+
+    describe(afterEach, []() {
+        before([]() {
+            nb_run_1 = nb_run_2 = 0;
+        });
+
+        afterEach([]() {
+            nb_run_2++;
+        });
+
+        it("Should work 1", []() {
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+            nb_run_1++;
+        });
+
+        it("Should work 2", []() {
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+            nb_run_1++;
+        });
+
+        it("Should work 3", []() {
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+            nb_run_1++;
         });
     });
 });
