@@ -27,21 +27,36 @@
  * Holds test cases
  */
 
-#include <functional>
+#include "TestCase.h"
+
+#include <memory>
+#include <optional>
 #include <string>
+#include <vector>
 
 namespace crossedfingers {
 class TestSuite final {
   public:
-    explicit TestSuite(std::string name, const std::function<void()> &callback);
+    explicit TestSuite(std::string name);
 
-    auto run() const -> void;
+    auto addSubSuite(const std::string &name) -> TestSuite *;
 
-    auto list() const -> void;
+    auto addTestCase(const std::string &name, const std::function<void()> &callback) -> void;
+
+    auto setBefore(const std::function<void()> &callback) -> void;
+
+    auto setBeforeEach(const std::function<void()> &callback) -> void;
+
+    auto run(const std::string &current_name) -> void;
+
+    auto list(const std::string &current_name) const -> void;
 
   private:
     std::string _name;
-    std::function<void()> _callback;
+    std::optional<std::function<void()>> _before;
+    std::optional<std::function<void()>> _before_each;
+    std::vector<TestSuite> _sub_suites;
+    std::vector<TestCase> _test_cases;
 };
 } // namespace crossedfingers
 

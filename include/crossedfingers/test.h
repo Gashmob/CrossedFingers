@@ -30,10 +30,19 @@
 #include "TestRun.h"
 #include "assert/assert.h"
 
-#define describe(name, callback) const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+#define describe(name, callback) \
+    [[maybe_unused]] const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, callback)
 
 inline auto it(const std::string &name, const std::function<void()> &callback) -> void {
     crossedfingers::TestRun::instance().addCase(name, callback);
+}
+
+inline auto before(const std::function<void()> &callback) -> void {
+    crossedfingers::TestRun::instance().addBefore(callback);
+}
+
+inline auto beforeEach(const std::function<void()> &callback) -> void {
+    crossedfingers::TestRun::instance().addBeforeEach(callback);
 }
 
 #endif // TEST_H

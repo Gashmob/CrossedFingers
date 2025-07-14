@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,33 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/commands/RunCommand.h"
-
-#include "../../../include/crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/display/DefaultDisplay.h"
-#include "crossedfingers/display/OutputWrapper.h"
+#include "crossedfingers/test.h"
 
 using namespace crossedfingers;
 
-auto RunCommand::setup(yeschief::CLI &cli) -> void {
-    cli.addOption<int>(
-        "random-seed",
-        "Seed to shuffle test run order",
-        {
-          .required   = false,
-          .value_help = "<number>",
-        }
-    );
-}
+static int i  = 2;
+static bool b = true;
+static char c = 'd';
 
-auto RunCommand::run(const yeschief::CLIResults &results) -> int {
-    OutputWrapper::init();
-    TestStatus::instance().setDisplay(new DefaultDisplay());
+static int some_value = 0;
 
-    const auto seed = std::any_cast<int>(results.get("random-seed").value_or(static_cast<int>(std::time(nullptr))));
-    OutputWrapper::print("Using seed: " + std::to_string(seed) + "\n\n");
-    GlobalState::random_seed = seed;
+static int nb_run_1 = 0;
+static int nb_run_2 = 0;
 
-    return _test_run->runTests();
-}
+describe(test_run, []() {
+    describe(context, []() {
+        it("Should work with global context", []() {
+            assertThat(i).isEqualTo(2);
+            assertThat(b).isEqualTo(true);
+            assertThat(c).isEqualTo('d');
+        });
+    });
+
+    describe(before, []() {
+        before([]() {
+            some_value = 2;
+        });
+
+        it("Should call before and set some_value to 2", []() {
+            assertThat(some_value).isEqualTo(2);
+        });
+    });
+
+    describe(beforeEach, []() {
+        beforeEach([]() {
+            nb_run_2++;
+        });
+
+        it("Should work 1", []() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+
+        it("Should work 2", []() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+
+        it("Should work 3", []() {
+            nb_run_1++;
+            assertThat(nb_run_1).isEqualTo(nb_run_2);
+        });
+    });
+});

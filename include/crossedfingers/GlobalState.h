@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,25 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef UTILS_HPP
-#define UTILS_HPP
 
-#include <string>
-#include <vector>
+#ifndef GLOBALSTATE_H
+#define GLOBALSTATE_H
 
 namespace crossedfingers {
-inline auto join(const std::vector<std::string> &strings, const std::string &delimiter) -> std::string {
-    if (strings.empty()) {
-        return "";
-    }
+class GlobalState final {
+  public:
+    static int random_seed;
 
-    std::string result = *strings.begin();
-    for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
-        result += delimiter + *it;
-    }
+  private:
+    GlobalState() = default;
 
-    return result;
-}
-}
+    ~GlobalState() = default;
+};
+} // namespace crossedfingers
 
-#endif //UTILS_HPP
+#endif // GLOBALSTATE_H
