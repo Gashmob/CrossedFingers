@@ -52,6 +52,8 @@ class TestRun final {
 
     auto addBeforeEach(const std::function<void()> &callback) const -> void;
 
+    auto addAfter(const std::function<void()> &callback) const -> void;
+
   private:
     TestSuite *_current_suite;
     std::vector<TestSuite> _root_suites;

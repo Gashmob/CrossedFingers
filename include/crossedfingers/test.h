@@ -45,4 +45,8 @@ inline auto beforeEach(const std::function<void()> &callback) -> void {
     crossedfingers::TestRun::instance().addBeforeEach(callback);
 }
 
+inline auto after(const std::function<void()> &callback) -> void {
+    crossedfingers::TestRun::instance().addAfter(callback);
+}
+
 #endif // TEST_H

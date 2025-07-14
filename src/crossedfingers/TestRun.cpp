@@ -102,6 +102,14 @@ auto TestRun::addBeforeEach(const std::function<void()> &callback) const -> void
     _current_suite->setBeforeEach(callback);
 }
 
+auto TestRun::addAfter(const std::function<void()> &callback) const -> void {
+    if (_current_suite == nullptr) {
+        throw std::logic_error("Hmmm, there is something strange : an after() were added in global context");
+    }
+
+    _current_suite->setAfter(callback);
+}
+
 auto TestRun::runTests() -> int {
     std::mt19937_64 generator(GlobalState::random_seed);
     std::shuffle(_root_suites.begin(), _root_suites.end(), generator);
