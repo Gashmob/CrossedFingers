@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/display/OutputWrapper.h"
-#include "crossedfingers/test.h"
+#include <crossedfingers/display/OutputWrapper.h>
+#include <crossedfingers/test.h>
 
 using namespace crossedfingers;
 
