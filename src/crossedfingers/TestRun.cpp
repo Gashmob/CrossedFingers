@@ -23,7 +23,7 @@
  */
 #include "crossedfingers/TestRun.h"
 
-#include "../../include/crossedfingers/GlobalState.h"
+#include "crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/commands/ListCommand.h"
 #include "crossedfingers/commands/RunCommand.h"

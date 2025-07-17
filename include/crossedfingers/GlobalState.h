@@ -25,10 +25,14 @@
 #ifndef GLOBALSTATE_H
 #define GLOBALSTATE_H
 
+#include <string>
+#include <optional>
+
 namespace crossedfingers {
 class GlobalState final {
   public:
     static int random_seed;
+    static std::optional<std::string> filter;
 
   private:
     GlobalState() = default;

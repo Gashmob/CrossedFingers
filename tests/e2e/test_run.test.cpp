@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include "../../src/crossedfingers/utils.hpp"
 #include "test_tools.hpp"
 
 #include <algorithm>
@@ -39,5 +40,19 @@ describe(test_run, []() {
         for (const auto &test : test_list) {
             assertThat(run).hasSubString(test);
         }
+    });
+
+    it("Should run only filtered tests", []() {
+        auto run = run_with_args("run --filter 'assert.skip::Should skip this test'");
+        assertThat(run).hasSubString("Using filter: assert.skip::Should skip this test");
+        assertThat(run).hasSubString("> assert.skip::Should skip this test - SKIP");
+        assertThat(run).hasSubString("TEST COUNT: 1");
+
+        run = run_with_args("run --filter 'test_run.beforeEach.*'");
+        assertThat(run).hasSubString("Using filter: test_run.beforeEach.*");
+        assertThat(run).hasSubString("> test_run.beforeEach::Should work 1 - SUCCESS");
+        assertThat(run).hasSubString("> test_run.beforeEach::Should work 2 - SUCCESS");
+        assertThat(run).hasSubString("> test_run.beforeEach::Should work 3 - SUCCESS");
+        assertThat(run).hasSubString("TEST COUNT: 3");
     });
 });

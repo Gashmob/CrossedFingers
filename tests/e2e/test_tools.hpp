@@ -48,20 +48,4 @@ inline auto exec_output(const char *cmd) -> std::string {
 
 #define run_with_args(args) exec_output(UNIT_TEST_BIN " " args)
 
-inline auto split(const std::string &str, const std::string &delimiter) -> std::vector<std::string> {
-    const std::regex split_regex(delimiter);
-    std::sregex_token_iterator iter(str.begin(), str.end(), split_regex, -1);
-    const std::sregex_token_iterator end;
-    std::vector<std::string> result;
-    while (iter != end) {
-        std::string current = *iter++;
-        if (current.empty()) {
-            continue;
-        }
-        result.push_back(current);
-    }
-
-    return result;
-}
-
 #endif // TEST_TOOLS_HPP

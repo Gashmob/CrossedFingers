@@ -23,9 +23,11 @@
  */
 #include "crossedfingers/TestCase.h"
 
+#include "crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/assert/AssertionException.h"
 #include "crossedfingers/display/OutputWrapper.h"
+#include "utils.hpp"
 
 #include <format>
 #include <utility>
@@ -36,7 +38,12 @@ TestCase::TestCase(std::string name, const std::function<void()> &callback)
     : _name(std::move(name)), _callback(callback) {}
 
 auto TestCase::run(const std::string &current_name) const -> void {
-    TestStatus::instance().beginCase(current_name + "::" + _name);
+    const auto test_fullname = current_name + "::" + _name;
+    if (! matchPattern(test_fullname, GlobalState::filter)) {
+        return;
+    }
+
+    TestStatus::instance().beginCase(test_fullname);
     try {
         try {
             _callback();

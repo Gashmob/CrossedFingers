@@ -23,9 +23,10 @@
  */
 #include "crossedfingers/TestSuite.h"
 
-#include "../../include/crossedfingers/GlobalState.h"
+#include "crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/assert/AssertionException.h"
+#include "utils.hpp"
 
 #include <format>
 #include <random>
@@ -78,6 +79,10 @@ auto TestSuite::setAfterEach(const std::function<void()> &callback) -> void {
 
 auto TestSuite::run(const std::string &current_name) -> void {
     const auto suite_fullname = (current_name.empty() ? "" : current_name + ".") + _name;
+    if (! matchPattern(suite_fullname, GlobalState::filter)) {
+        return;
+    }
+
     TestStatus::instance().beginSuite(suite_fullname);
 
     if (_before.has_value()) {
