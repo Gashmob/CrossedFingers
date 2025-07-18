@@ -23,10 +23,12 @@
  */
 #include "crossedfingers/commands/RunCommand.h"
 
-#include "../../../include/crossedfingers/GlobalState.h"
+#include "crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/display/DefaultDisplay.h"
 #include "crossedfingers/display/OutputWrapper.h"
+
+#include <regex>
 
 using namespace crossedfingers;
 
@@ -39,6 +41,14 @@ auto RunCommand::setup(yeschief::CLI &cli) -> void {
           .value_help = "<number>",
         }
     );
+    cli.addOption<std::string>(
+        "filter",
+        "Run only the tests matching the pattern. '*' matches any substring",
+        {
+          .required   = false,
+          .value_help = "<pattern>",
+        }
+    );
 }
 
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
@@ -46,8 +56,17 @@ auto RunCommand::run(const yeschief::CLIResults &results) -> int {
     TestStatus::instance().setDisplay(new DefaultDisplay());
 
     const auto seed = std::any_cast<int>(results.get("random-seed").value_or(static_cast<int>(std::time(nullptr))));
-    OutputWrapper::print("Using seed: " + std::to_string(seed) + "\n\n");
+    OutputWrapper::print("Using seed: " + std::to_string(seed) + "\n");
     GlobalState::random_seed = seed;
+
+    GlobalState::filter = results.get("filter").transform([](std::any value) {
+        return std::any_cast<std::string>(value);
+    });
+    if (GlobalState::filter.has_value()) {
+        OutputWrapper::print("Using filter: " + GlobalState::filter.value() + "\n");
+    }
+
+    OutputWrapper::print("\n");
 
     return _test_run->runTests();
 }

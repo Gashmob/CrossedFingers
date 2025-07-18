@@ -53,9 +53,9 @@ class Assertion final {
     ~Assertion() = default;
 };
 
-template<typename ActualType> class AssertionMatcher final {
+template<typename ActualType> class AssertionMatcherBase {
   public:
-    explicit AssertionMatcher(const ActualType &actual): _actual(std::move(actual)) {}
+    explicit AssertionMatcherBase(const ActualType &actual): _actual(std::move(actual)) {}
 
     auto isTrue() const -> void {
         isEqualTo(true);
@@ -181,11 +181,16 @@ template<typename ActualType> class AssertionMatcher final {
         Assertion::_fail("Need a valid std::string to check if it exists.");
     }
 
-  private:
+  protected:
     const ActualType _actual;
 };
 
-template<> inline auto AssertionMatcher<std::string>::matchesRegex(const std::string &pattern) const -> void {
+template<typename ActualType> class AssertionMatcher final : public AssertionMatcherBase<ActualType> {
+  public:
+    explicit AssertionMatcher(const ActualType &actual): AssertionMatcherBase<ActualType>(actual) {}
+};
+
+template<> inline auto AssertionMatcherBase<std::string>::matchesRegex(const std::string &pattern) const -> void {
     const std::regex regex(pattern);
     if (! std::regex_match(_actual, regex)) {
         Assertion::_fail("'" + _actual + "' doesn't match '" + pattern + "'.");
@@ -194,7 +199,7 @@ template<> inline auto AssertionMatcher<std::string>::matchesRegex(const std::st
     Assertion::success();
 }
 
-template<> inline auto AssertionMatcher<std::string>::hasSubString(const std::string &sub) const -> void {
+template<> inline auto AssertionMatcherBase<std::string>::hasSubString(const std::string &sub) const -> void {
     if (! std::string(_actual).contains(sub)) {
         Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' contains '" + sub + "'");
     }
@@ -202,7 +207,7 @@ template<> inline auto AssertionMatcher<std::string>::hasSubString(const std::st
     Assertion::success();
 }
 
-template<> inline auto AssertionMatcher<std::string>::startsWith(const std::string &start) const -> void {
+template<> inline auto AssertionMatcherBase<std::string>::startsWith(const std::string &start) const -> void {
     if (! std::string(_actual).starts_with(start)) {
         Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' starts with '" + start + "'");
     }
@@ -210,7 +215,7 @@ template<> inline auto AssertionMatcher<std::string>::startsWith(const std::stri
     Assertion::success();
 }
 
-template<> inline auto AssertionMatcher<std::string>::endsWith(const std::string &end) const -> void {
+template<> inline auto AssertionMatcherBase<std::string>::endsWith(const std::string &end) const -> void {
     if (! std::string(_actual).ends_with(end)) {
         Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' ends with '" + end + "'");
     }
@@ -218,37 +223,41 @@ template<> inline auto AssertionMatcher<std::string>::endsWith(const std::string
     Assertion::success();
 }
 
-#define AssertionMatcher_contains(ContainerType)                                                                  \
-    template<typename ContainedType> class AssertionMatcher<ContainerType<ContainedType>> {                       \
-      public:                                                                                                     \
-        explicit AssertionMatcher(const ContainerType<ContainedType> &actual): _actual(std::move(actual)) {}      \
-                                                                                                                  \
-        auto contains(const ContainedType &contained) const -> void {                                             \
-            if (std::find(_actual.begin(), _actual.end(), contained) == _actual.end()) {                          \
-                Assertion::_fail("Failed asserting that container contains value");                               \
-            }                                                                                                     \
-                                                                                                                  \
-            Assertion::success();                                                                                 \
-        }                                                                                                         \
-                                                                                                                  \
-        auto count(int number) const -> void {                                                                    \
-            if (_actual.size() != number) {                                                                       \
-                Assertion::_fail("Failed asserting that container has " + std::to_string(number) + " elements."); \
-            }                                                                                                     \
-                                                                                                                  \
-            Assertion::success();                                                                                 \
-        }                                                                                                         \
-                                                                                                                  \
-        auto isEmpty() const -> void {                                                                            \
-            if (! _actual.empty()) {                                                                              \
-                Assertion::_fail("Failed asserting that container is empty.");                                    \
-            }                                                                                                     \
-                                                                                                                  \
-            Assertion::success();                                                                                 \
-        }                                                                                                         \
-                                                                                                                  \
-      private:                                                                                                    \
-        const ContainerType<ContainedType> _actual;                                                               \
+#define AssertionMatcher_contains(ContainerType)                                                                       \
+    template<typename ContainedType>                                                                                   \
+    class AssertionMatcher<ContainerType<ContainedType>> : public AssertionMatcherBase<ContainerType<ContainedType>> { \
+      public:                                                                                                          \
+        explicit AssertionMatcher(const ContainerType<ContainedType> &actual)                                          \
+            : AssertionMatcherBase<ContainerType<ContainedType>>(actual) {}                                            \
+                                                                                                                       \
+        auto contains(const ContainedType &contained) const -> void {                                                  \
+            if (std::find(                                                                                             \
+                    AssertionMatcherBase<ContainerType<ContainedType>>::_actual.begin(),                               \
+                    AssertionMatcherBase<ContainerType<ContainedType>>::_actual.end(),                                 \
+                    contained                                                                                          \
+                )                                                                                                      \
+                == AssertionMatcherBase<ContainerType<ContainedType>>::_actual.end()) {                                \
+                Assertion::_fail("Failed asserting that container contains value");                                    \
+            }                                                                                                          \
+                                                                                                                       \
+            Assertion::success();                                                                                      \
+        }                                                                                                              \
+                                                                                                                       \
+        auto count(int number) const -> void {                                                                         \
+            if (AssertionMatcherBase<ContainerType<ContainedType>>::_actual.size() != number) {                        \
+                Assertion::_fail("Failed asserting that container has " + std::to_string(number) + " elements.");      \
+            }                                                                                                          \
+                                                                                                                       \
+            Assertion::success();                                                                                      \
+        }                                                                                                              \
+                                                                                                                       \
+        auto isEmpty() const -> void {                                                                                 \
+            if (! AssertionMatcherBase<ContainerType<ContainedType>>::_actual.empty()) {                               \
+                Assertion::_fail("Failed asserting that container is empty.");                                         \
+            }                                                                                                          \
+                                                                                                                       \
+            Assertion::success();                                                                                      \
+        }                                                                                                              \
     }
 
 AssertionMatcher_contains(std::vector);
@@ -259,39 +268,42 @@ AssertionMatcher_contains(std::list);
 
 AssertionMatcher_contains(std::set);
 
-template<typename ContainedType, std::size_t Size> class AssertionMatcher<std::array<ContainedType, Size>> {
+template<typename ContainedType, std::size_t Size>
+class AssertionMatcher<std::array<ContainedType, Size>> : public AssertionMatcherBase<std::array<ContainedType, Size>> {
   public:
-    explicit AssertionMatcher(const std::array<ContainedType, Size> &actual): _actual(std::move(actual)) {}
+    explicit AssertionMatcher(const std::array<ContainedType, Size> &actual)
+        : AssertionMatcherBase<std::array<ContainedType, Size>>(actual) {}
 
     auto contains(const ContainedType &contained) const -> void {
-        if (std::find(_actual.begin(), _actual.end(), contained) == _actual.end()) {
+        if (std::find(
+                AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.begin(),
+                AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.end(),
+                contained
+            )
+            == AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.end()) {
             Assertion::_fail("Failed asserting that container contains value");
         }
 
         Assertion::success();
     }
-
-  private:
-    const std::array<ContainedType, Size> _actual;
 };
 
-template<typename KeyType, typename ValueType> class AssertionMatcher<std::map<KeyType, ValueType>> {
+template<typename KeyType, typename ValueType>
+class AssertionMatcher<std::map<KeyType, ValueType>> : public AssertionMatcherBase<std::map<KeyType, ValueType>> {
   public:
-    explicit AssertionMatcher(const std::map<KeyType, ValueType> &actual): _actual(std::move(actual)) {}
+    explicit AssertionMatcher(const std::map<KeyType, ValueType> &actual)
+        : AssertionMatcherBase<std::map<KeyType, ValueType>>(actual) {}
 
     auto hasKey(const KeyType &key) const -> void {
-        if (! _actual.contains(key)) {
+        if (! AssertionMatcherBase<std::map<KeyType, ValueType>>::_actual.contains(key)) {
             Assertion::_fail("Failed asserting that map contains key");
         }
 
         Assertion::success();
     }
-
-  private:
-    const std::map<KeyType, ValueType> _actual;
 };
 
-template<> inline auto AssertionMatcher<std::string>::isFile() const -> void {
+template<> inline auto AssertionMatcherBase<std::string>::isFile() const -> void {
     if (! std::filesystem::is_regular_file(_actual)) {
         Assertion::_fail("File '" + _actual + "' not found.");
     }
@@ -299,7 +311,7 @@ template<> inline auto AssertionMatcher<std::string>::isFile() const -> void {
     Assertion::success();
 }
 
-template<> inline auto AssertionMatcher<std::string>::isDirectory() const -> void {
+template<> inline auto AssertionMatcherBase<std::string>::isDirectory() const -> void {
     if (! std::filesystem::is_directory(_actual)) {
         Assertion::_fail("File '" + _actual + "' not found.");
     }

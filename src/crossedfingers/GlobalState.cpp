@@ -26,3 +26,5 @@
 using namespace crossedfingers;
 
 int GlobalState::random_seed = 0;
+
+std::optional<std::string> GlobalState::filter = std::nullopt;

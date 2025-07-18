@@ -7,7 +7,7 @@ WORKDIR="$ROOT_DIR/out/unit_tests"
 cmake -B "$WORKDIR" -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=On -DCODE_COVERAGE=On -G Ninja
 cmake --build "$WORKDIR" --target unit-tests
 cd "$WORKDIR"
-output="$(ctest --extra-verbose)"
+output="$(ctest -L unit --extra-verbose)"
 
 if [[ $output != *"After was ran"* ]]; then
   echo "test_run.after::Should call after - FAILURE"
