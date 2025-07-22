@@ -1,3 +1,5 @@
+include(CrossedFingers)
+
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # Unit tests
 
@@ -15,8 +17,18 @@ target_compile_definitions(unit-tests PUBLIC FIXTURES_PATH="${PROJECT_SOURCE_DIR
 
 target_link_libraries(unit-tests PRIVATE crossedfingers crossedfingers_main)
 
-add_test(NAME unit-tests COMMAND "unit-tests")
-set_tests_properties(unit-tests PROPERTIES LABELS "unit")
+crossedfingers_discover_tests(unit-tests
+        PROPERTIES LABELS "unit"
+)
+
+# _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
+# Run tests
+
+add_executable(run-tests "${PROJECT_SOURCE_DIR}/tests/run/test_run.test.cpp")
+target_link_libraries(run-tests PRIVATE crossedfingers crossedfingers_main)
+
+add_test(NAME run-tests COMMAND "run-tests")
+set_tests_properties(run-tests PROPERTIES LABELS "unit")
 
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # e2e tests
@@ -39,5 +51,6 @@ target_compile_definitions(e2e-tests PUBLIC
 
 target_link_libraries(e2e-tests PRIVATE crossedfingers crossedfingers_main)
 
-add_test(NAME e2e-tests COMMAND "e2e-tests")
-set_tests_properties(e2e-tests PROPERTIES LABELS "e2e")
+crossedfingers_discover_tests(e2e-tests
+        PROPERTIES LABELS "e2e"
+)
