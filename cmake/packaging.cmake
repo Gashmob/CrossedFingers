@@ -67,9 +67,11 @@ function(lib_package)
     install(FILES
             ${project_config}
             ${version_config}
+            DESTINATION ${CROSSEDFINGERS_CMAKE_DIR})
+    install(FILES
             "${PROJECT_SOURCE_DIR}/cmake/CrossedFingers.cmake"
             "${PROJECT_SOURCE_DIR}/cmake/CrossedFingersAddTests.cmake"
-            DESTINATION ${CROSSEDFINGERS_CMAKE_DIR})
+            DESTINATION "${CROSSEDFINGERS_CMAKE_DIR}/modules")
     install(EXPORT ${targets_export_name} DESTINATION ${CROSSEDFINGERS_CMAKE_DIR}
             NAMESPACE crossedfingers::)
     install(TARGETS crossedfingers crossedfingers_main EXPORT ${targets_export_name} DESTINATION ${CMAKE_INSTALL_LIBDIR})
