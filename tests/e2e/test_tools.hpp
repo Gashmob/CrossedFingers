@@ -27,7 +27,6 @@
 #include <memory>
 #include <regex>
 #include <string>
-#include <vector>
 
 inline auto exec_output(const char *cmd) -> std::string {
     char buffer[128];

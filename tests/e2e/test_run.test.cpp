@@ -48,11 +48,18 @@ describe(test_run, []() {
         assertThat(run).hasSubString("> assert.skip::Should skip this test - SKIP");
         assertThat(run).hasSubString("TEST COUNT: 1");
 
-        run = run_with_args("run --filter 'test_run.beforeEach.*'");
-        assertThat(run).hasSubString("Using filter: test_run.beforeEach.*");
-        assertThat(run).hasSubString("> test_run.beforeEach::Should work 1 - SUCCESS");
-        assertThat(run).hasSubString("> test_run.beforeEach::Should work 2 - SUCCESS");
-        assertThat(run).hasSubString("> test_run.beforeEach::Should work 3 - SUCCESS");
-        assertThat(run).hasSubString("TEST COUNT: 3");
+        run = run_with_args("run --filter 'utils.split.*'");
+        assertThat(run).hasSubString("Using filter: utils.split.*");
+        assertThat(run).hasSubString("> utils.split::Should returns empty for empty input - SUCCESS");
+        assertThat(run).hasSubString("> utils.split::Should return one item when delimiter not present - SUCCESS");
+        assertThat(run).hasSubString("> utils.split::Can split on space - SUCCESS");
+        assertThat(run).hasSubString("> utils.split::Skips empty tokens - SUCCESS");
+        assertThat(run).hasSubString("> utils.split::Can split on long delimiter - SUCCESS");
+        assertThat(run).hasSubString("TEST COUNT: 5");
+    });
+
+    it("Should run with given seed", []() {
+        const auto run = run_with_args("run --random-seed 586943271");
+        assertThat(run).hasSubString("Using seed: 586943271");
     });
 });
