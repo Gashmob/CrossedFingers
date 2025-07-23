@@ -57,4 +57,9 @@ describe(test_run, []() {
         assertThat(run).hasSubString("> utils.split::Can split on long delimiter - SUCCESS");
         assertThat(run).hasSubString("TEST COUNT: 5");
     });
+
+    it("Should run with given seed", []() {
+        const auto run = run_with_args("run --random-seed 586943271");
+        assertThat(run).hasSubString("Using seed: 586943271");
+    });
 });
