@@ -6,7 +6,7 @@
   "labels": [
     "dependencies"
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "master"
   ],
   "commitBodyTable": true,
