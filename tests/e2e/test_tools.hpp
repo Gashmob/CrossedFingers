@@ -29,10 +29,15 @@
 #include <string>
 
 inline auto exec_output(const char *cmd) -> std::string {
+    struct pclose_deleter {
+        int operator()(FILE *file) const {
+            return pclose(file);
+        }
+    };
     char buffer[128];
     std::string result;
 
-    const std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    const std::unique_ptr<FILE, pclose_deleter> pipe(popen(cmd, "r"));
 
     if (! pipe) {
         throw std::runtime_error("popen() failed!");

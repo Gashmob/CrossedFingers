@@ -28,6 +28,7 @@
 using namespace crossedfingers::internals;
 
 auto ListCommand::run(const yeschief::CLIResults &results) -> int {
+    (void) results;
     OutputWrapper::init();
     return _test_run->listTests();
 }

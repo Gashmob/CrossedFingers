@@ -491,6 +491,7 @@ describe(assert, []() {
     describe(matchPredicate, []() {
         it("Should success", []() {
             assertThat('c').matchPredicate([](const char &_) {
+                (void) _;
                 return true;
             });
             assertThat(3).matchPredicate([](const int &n) {
@@ -501,6 +502,7 @@ describe(assert, []() {
         it("Should fail", []() {
             expectException<crossedfingers::internals::AssertionException>("Predicate returned false.");
             assertThat(3).matchPredicate([](const int &_) {
+                (void) _;
                 return false;
             });
         });

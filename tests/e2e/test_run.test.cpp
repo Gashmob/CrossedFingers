@@ -32,7 +32,7 @@ describe(test_run, []() {
     it("Should have the same count of test between list and run", []() {
         const auto list      = run_with_args("list");
         const auto test_list = split(list, "\n");
-        assertThat(test_list.size()).isGreaterThanOrEqualTo(1);
+        assertThat(test_list.size()).isGreaterThanOrEqualTo(static_cast<unsigned int>(1));
 
         const auto run = run_with_args("run");
         assertThat(run).hasSubString("TEST COUNT: " + std::to_string(test_list.size()));

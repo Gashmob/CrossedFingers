@@ -40,7 +40,7 @@ inline auto splitPattern(const std::string &pattern) -> std::vector<std::string>
     const auto end  = split(temp[temp.size() - 1], "::");
 
     std::vector<std::string> result;
-    for (int i = 0; i < temp.size() - 1; ++i) {
+    for (unsigned int i = 0; i < temp.size() - 1; ++i) {
         result.push_back(temp[i]);
     }
     for (const auto &element : end) {

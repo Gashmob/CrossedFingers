@@ -30,6 +30,7 @@
 using namespace crossedfingers::internals;
 
 auto DefaultDisplay::printBeginSuite(const std::string &suite_name) -> void {
+    (void) suite_name;
     // Nothing to do
 }
 
@@ -38,22 +39,27 @@ auto DefaultDisplay::printBeginCase(const std::string &case_name) -> void {
 }
 
 auto DefaultDisplay::printEndCase(const std::string &case_name) -> void {
+    (void) case_name;
     OutputWrapper::print("SUCCESS\n");
 }
 
 auto DefaultDisplay::printEndSuite(const std::string &suite_name) -> void {
+    (void) suite_name;
     // Nothing to do
 }
 
 auto DefaultDisplay::printSkipCase(const std::string &case_name) -> void {
+    (void) case_name;
     OutputWrapper::print("SKIP\n");
 }
 
 auto DefaultDisplay::printWarningCase(const std::string &case_name) -> void {
+    (void) case_name;
     OutputWrapper::print("WARNING\n");
 }
 
 auto DefaultDisplay::printFailCase(const std::string &case_name, const std::string &message) -> void {
+    (void) case_name;
     OutputWrapper::print(std::format("FAILURE\n    {}\n", message));
 }
 

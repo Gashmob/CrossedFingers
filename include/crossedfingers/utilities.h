@@ -36,6 +36,7 @@ template<typename Type> auto getTypeName() -> std::string {
 }
 
 template<typename Type> auto getTypeName(const Type &_) -> std::string {
+    (void) _;
     return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
 }
 
