@@ -30,11 +30,28 @@
 #include "TestRun.h"
 #include "assert/assert.h"
 
-#define describe(name, callback) \
-    [[maybe_unused]] const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, callback)
+#include <format>
+
+#define describe(name, ...) \
+    [[maybe_unused]] const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, __VA_ARGS__)
 
 inline auto it(const std::string &name, const std::function<void()> &callback) -> void {
     crossedfingers::TestRun::instance().addCase(name, callback);
+}
+
+template<typename Callback, typename... Args>
+auto it_each(
+    const std::vector<std::tuple<Args...>> &args_list, const std::string &template_name, const Callback *callback
+) -> void {
+    for (const auto &args : args_list) {
+        const auto name = std::apply(
+            [&template_name](auto &&...format_args) {
+                return std::vformat(template_name, std::make_format_args(format_args...));
+            },
+            args
+        );
+        crossedfingers::TestRun::instance().addParameterizedCase(name, args, callback);
+    }
 }
 
 inline auto before(const std::function<void()> &callback) -> void {

@@ -113,4 +113,18 @@ describe(test_run, []() {
             nb_run_1++;
         });
     });
+
+    describe(it_each, []() {
+        it_each<void(int, int, int), int, int, int>(
+            {
+              {1,  2,  3 },
+              {4,  5,  9 },
+              {10, 11, 21}
+        },
+            "Should do {} + {} = {}",
+            [](const int a, const int b, const int result) {
+                assertThat(a + b).isEqualTo(result);
+            }
+        );
+    });
 });

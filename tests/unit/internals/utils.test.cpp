@@ -21,8 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "../../src/crossedfingers/utils.hpp"
-
+#include <crossedfingers/internals/utils.hpp>
 #include <crossedfingers/test.h>
 
 using namespace crossedfingers;

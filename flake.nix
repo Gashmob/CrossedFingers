@@ -35,7 +35,7 @@
       });
 
       devShells = eachSystem (system: {
-        default = pkgs.${system}.mkShellNoCC {
+        default = pkgs.${system}.mkShell {
           name = "crossedfingers-dev-env";
 
           packages = with pkgs.${system};
