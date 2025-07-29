@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,25 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#ifndef LISTCOMMAND_H
+#define LISTCOMMAND_H
+/**
+ * This command list all the tests case line by line
+ */
 
-#ifndef UTILS_H
-#define UTILS_H
+#include "../TestRun.h"
 
-#include <cxxabi.h>
-#include <string>
+#include <yeschief.h>
 
-namespace crossedfingers {
-template<typename Type> auto getTypeName() -> std::string {
-    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
-}
+namespace crossedfingers::internals {
+class ListCommand final : public yeschief::Command {
+  public:
+    explicit ListCommand(TestRun *test_run): _test_run(test_run) {}
 
-template<typename Type> auto getTypeName(const Type &_) -> std::string {
-    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
-}
+    [[nodiscard]] auto getName() const -> std::string override {
+        return "list";
+    }
 
-inline auto getTypeName(const std::type_info *type) -> std::string {
-    return abi::__cxa_demangle(type->name(), nullptr, nullptr, nullptr);
-}
+    [[nodiscard]] auto getDescription() const -> std::string override {
+        return "List tests contained in the program";
+    }
+
+    auto run(const yeschief::CLIResults &results) -> int override;
+
+  private:
+    TestRun *_test_run;
+};
 } // namespace crossedfingers
 
-#endif // UTILS_H
+#endif // LISTCOMMAND_H

@@ -21,48 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef ASSERTIONEXCEPTION_H
+#define ASSERTIONEXCEPTION_H
 /**
- * How to display tests in console
+ * Exceptions thrown by Assertion
  */
 
-#include <map>
 #include <string>
-#include <vector>
+#include <utility>
 
-namespace crossedfingers {
-class Display {
+namespace crossedfingers::internals {
+class AssertionException : public std::exception {
   public:
-    virtual auto printBeginSuite(const std::string &suite_name) -> void = 0;
+    const std::string _message;
 
-    virtual auto printBeginCase(const std::string &case_name) -> void = 0;
+    explicit AssertionException(std::string message): _message(std::move(message)) {}
 
-    virtual auto printEndCase(const std::string &case_name) -> void = 0;
-
-    virtual auto printEndSuite(const std::string &suite_name) -> void = 0;
-
-    virtual auto printSkipCase(const std::string &case_name) -> void = 0;
-
-    virtual auto printWarningCase(const std::string &case_name) -> void = 0;
-
-    virtual auto printFailCase(const std::string &case_name, const std::string &message) -> void = 0;
-
-    virtual auto printSummary(
-        int test_count,
-        int assertion_count,
-        const std::vector<std::string> &succeed_tests,
-        const std::vector<std::string> &skipped_tests,
-        const std::map<std::string, std::string> &warning_tests,
-        const std::map<std::string, std::string> &failed_tests
-    ) -> void
-        = 0;
-
-  protected:
-    Display() = default;
-
-    ~Display() = default;
+    [[nodiscard]] auto what() const noexcept -> const char * override {
+        return _message.c_str();
+    }
 };
-} // namespace crossedfingers
 
-#endif // DISPLAY_H
+class SkipException final : public AssertionException {
+  public:
+    SkipException(): AssertionException("Test case skipped") {}
+};
+} // namespace crossedfingers::internals
+
+#endif // ASSERTIONEXCEPTION_H

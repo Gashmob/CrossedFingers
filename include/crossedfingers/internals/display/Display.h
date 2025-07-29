@@ -21,36 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef RUNCOMMAND_H
-#define RUNCOMMAND_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 /**
- * Main command, it runs the tests
+ * How to display tests in console
  */
 
-#include "../TestRun.h"
+#include <map>
+#include <string>
+#include <vector>
 
-#include <yeschief.h>
-
-namespace crossedfingers {
-class RunCommand final : public yeschief::Command {
+namespace crossedfingers::internals {
+class Display {
   public:
-    explicit RunCommand(TestRun *test_run): _test_run(test_run) {}
+    virtual auto printBeginSuite(const std::string &suite_name) -> void = 0;
 
-    [[nodiscard]] auto getName() const -> std::string override {
-        return "run";
-    }
+    virtual auto printBeginCase(const std::string &case_name) -> void = 0;
 
-    [[nodiscard]] auto getDescription() const -> std::string override {
-        return "Run tests contained in the program";
-    }
+    virtual auto printEndCase(const std::string &case_name) -> void = 0;
 
-    auto setup(yeschief::CLI &cli) -> void override;
+    virtual auto printEndSuite(const std::string &suite_name) -> void = 0;
 
-    auto run(const yeschief::CLIResults &results) -> int override;
+    virtual auto printSkipCase(const std::string &case_name) -> void = 0;
 
-  private:
-    TestRun *_test_run;
+    virtual auto printWarningCase(const std::string &case_name) -> void = 0;
+
+    virtual auto printFailCase(const std::string &case_name, const std::string &message) -> void = 0;
+
+    virtual auto printSummary(
+        int test_count,
+        int assertion_count,
+        const std::vector<std::string> &succeed_tests,
+        const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &warning_tests,
+        const std::map<std::string, std::string> &failed_tests
+    ) -> void
+        = 0;
+
+  protected:
+    Display() = default;
+
+    ~Display() = default;
 };
 } // namespace crossedfingers
 
-#endif // RUNCOMMAND_H
+#endif // DISPLAY_H

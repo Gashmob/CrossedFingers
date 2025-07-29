@@ -21,16 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/commands/RunCommand.h"
+#include "crossedfingers/internals/commands/RunCommand.h"
 
-#include "crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/display/DefaultDisplay.h"
-#include "crossedfingers/display/OutputWrapper.h"
+#include "crossedfingers/internals/GlobalState.h"
+#include "crossedfingers/internals/TestStatus.h"
+#include "crossedfingers/internals/display/DefaultDisplay.h"
+#include "crossedfingers/internals/display/OutputWrapper.h"
 
-#include <regex>
-
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto RunCommand::setup(yeschief::CLI &cli) -> void {
     cli.addOption<int>(

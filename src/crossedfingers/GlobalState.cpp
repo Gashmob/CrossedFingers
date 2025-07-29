@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/GlobalState.h"
+#include "crossedfingers/internals/GlobalState.h"
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 int GlobalState::random_seed = 0;
 

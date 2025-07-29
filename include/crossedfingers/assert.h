@@ -21,34 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef LISTCOMMAND_H
-#define LISTCOMMAND_H
+#ifndef ASSERT_H
+#define ASSERT_H
 /**
- * This command list all the tests case line by line
+ * Collection of assertions
  */
 
-#include "../TestRun.h"
-
-#include <yeschief.h>
+#include "internals/assert/Assertion.h"
 
 namespace crossedfingers {
-class ListCommand final : public yeschief::Command {
-  public:
-    explicit ListCommand(TestRun *test_run): _test_run(test_run) {}
+template<typename ActualType> [[nodiscard]] auto assertThat(const ActualType &actual) -> internals::AssertionMatcher<ActualType> {
+    return internals::AssertionMatcher(actual);
+}
 
-    [[nodiscard]] auto getName() const -> std::string override {
-        return "list";
-    }
-
-    [[nodiscard]] auto getDescription() const -> std::string override {
-        return "List tests contained in the program";
-    }
-
-    auto run(const yeschief::CLIResults &results) -> int override;
-
-  private:
-    TestRun *_test_run;
-};
+template<typename ExceptionType> auto expectException(const std::string &message = "") -> void {
+    internals::TestStatus::instance().shouldCatchException<ExceptionType>(message);
+}
 } // namespace crossedfingers
 
-#endif // LISTCOMMAND_H
+#endif // ASSERT_H

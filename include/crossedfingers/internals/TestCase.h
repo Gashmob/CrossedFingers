@@ -26,16 +26,16 @@
 /**
  * A test itself
  */
-#include "crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
-#include "internals/utils.hpp"
+#include "GlobalState.h"
+#include "TestStatus.h"
+#include "assert/AssertionException.h"
+#include "utils.hpp"
 
 #include <format>
 #include <functional>
 #include <string>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class TestCase {
   public:
     TestCase(std::string name, const std::function<void()> &callback);

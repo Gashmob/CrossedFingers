@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "../../include/crossedfingers/internals/utils.hpp"
 #include "test_tools.hpp"
 
-#include <algorithm>
 #include <crossedfingers/test.h>
+#include <crossedfingers/utilities.h>
 
 using namespace crossedfingers;
 

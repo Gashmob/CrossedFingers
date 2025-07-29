@@ -21,19 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestRun.h"
+#include "crossedfingers/internals/TestRun.h"
 
-#include "crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/commands/ListCommand.h"
-#include "crossedfingers/commands/RunCommand.h"
+#include "crossedfingers/internals/GlobalState.h"
+#include "crossedfingers/internals/TestStatus.h"
+#include "crossedfingers/internals/commands/ListCommand.h"
+#include "crossedfingers/internals/commands/RunCommand.h"
 
-#include <format>
 #include <iostream>
 #include <random>
 #include <yeschief.h>
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto TestRun::instance() -> TestRun & {
     static TestRun instance;

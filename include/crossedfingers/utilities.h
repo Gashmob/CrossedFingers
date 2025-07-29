@@ -22,23 +22,41 @@
  * SOFTWARE.
  */
 
-#ifndef GLOBALSTATE_H
-#define GLOBALSTATE_H
+#ifndef UTILS_H
+#define UTILS_H
 
+#include <cxxabi.h>
+#include <regex>
 #include <string>
-#include <optional>
+#include <vector>
 
 namespace crossedfingers {
-class GlobalState final {
-  public:
-    static int random_seed;
-    static std::optional<std::string> filter;
+template<typename Type> auto getTypeName() -> std::string {
+    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
+}
 
-  private:
-    GlobalState() = default;
+template<typename Type> auto getTypeName(const Type &_) -> std::string {
+    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
+}
 
-    ~GlobalState() = default;
-};
+inline auto getTypeName(const std::type_info *type) -> std::string {
+    return abi::__cxa_demangle(type->name(), nullptr, nullptr, nullptr);
+}
+
+inline auto split(const std::string &str, const std::string &delimiter) -> std::vector<std::string> {
+    const std::regex split_regex(delimiter);
+    std::sregex_token_iterator iter(str.begin(), str.end(), split_regex, -1);
+    const std::sregex_token_iterator end;
+    std::vector<std::string> result;
+    while (iter != end) {
+        std::string current = *iter++;
+        if (! current.empty()) {
+            result.push_back(current);
+        }
+    }
+
+    return result;
+}
 } // namespace crossedfingers
 
-#endif // GLOBALSTATE_H
+#endif // UTILS_H

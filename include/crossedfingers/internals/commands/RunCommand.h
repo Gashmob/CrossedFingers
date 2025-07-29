@@ -21,31 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ASSERTIONEXCEPTION_H
-#define ASSERTIONEXCEPTION_H
+#ifndef RUNCOMMAND_H
+#define RUNCOMMAND_H
 /**
- * Exceptions thrown by Assertion
+ * Main command, it runs the tests
  */
 
-#include <string>
-#include <utility>
+#include "../TestRun.h"
 
-namespace crossedfingers {
-class AssertionException : public std::exception {
+#include <yeschief.h>
+
+namespace crossedfingers::internals {
+class RunCommand final : public yeschief::Command {
   public:
-    const std::string _message;
+    explicit RunCommand(TestRun *test_run): _test_run(test_run) {}
 
-    explicit AssertionException(std::string message): _message(std::move(message)) {}
-
-    [[nodiscard]] auto what() const noexcept -> const char * override {
-        return _message.c_str();
+    [[nodiscard]] auto getName() const -> std::string override {
+        return "run";
     }
-};
 
-class SkipException final : public AssertionException {
-  public:
-    SkipException(): AssertionException("Test case skipped") {}
+    [[nodiscard]] auto getDescription() const -> std::string override {
+        return "Run tests contained in the program";
+    }
+
+    auto setup(yeschief::CLI &cli) -> void override;
+
+    auto run(const yeschief::CLIResults &results) -> int override;
+
+  private:
+    TestRun *_test_run;
 };
 } // namespace crossedfingers
 
-#endif // ASSERTIONEXCEPTION_H
+#endif // RUNCOMMAND_H

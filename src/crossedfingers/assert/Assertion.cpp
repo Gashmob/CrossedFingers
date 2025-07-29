@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/assert/Assertion.h"
+#include "crossedfingers/internals/assert/Assertion.h"
 
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
+#include "crossedfingers/internals/TestStatus.h"
+#include "crossedfingers/internals/assert/AssertionException.h"
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto Assertion::_skip() -> void {
     throw SkipException();

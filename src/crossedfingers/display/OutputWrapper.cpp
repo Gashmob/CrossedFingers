@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/display/OutputWrapper.h"
+#include "crossedfingers/internals/display/OutputWrapper.h"
 
 #include <iostream>
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto OutputWrapper::init() -> OutputWrapper & {
     static OutputWrapper instance;

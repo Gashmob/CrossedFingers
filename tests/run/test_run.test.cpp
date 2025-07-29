@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/display/OutputWrapper.h>
+#include <crossedfingers/internals/display/OutputWrapper.h>
 #include <crossedfingers/test.h>
 
 using namespace crossedfingers;
@@ -81,7 +81,7 @@ describe(test_run, []() {
 
     describe(after, []() {
         after([]() {
-            OutputWrapper::print("After was ran\n");
+            internals::OutputWrapper::print("After was ran\n");
         });
 
         it("Should call after", []() {

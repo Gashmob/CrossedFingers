@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestSuite.h"
+#include "crossedfingers/internals/TestSuite.h"
 
-#include "../../include/crossedfingers/internals/utils.hpp"
-#include "crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
+#include "crossedfingers/internals/GlobalState.h"
+#include "crossedfingers/internals/TestStatus.h"
+#include "crossedfingers/internals/assert/AssertionException.h"
+#include "crossedfingers/internals/utils.hpp"
 
 #include <format>
 #include <random>
 #include <utility>
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 TestSuite::TestSuite(std::string name): _name(std::move(name)), _before(std::nullopt) {}
 

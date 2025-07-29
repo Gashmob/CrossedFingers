@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class TestStatus final {
   public:
     static auto instance() -> TestStatus &;

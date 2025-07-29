@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/display/DefaultDisplay.h"
+#include "crossedfingers/internals/display/DefaultDisplay.h"
 
-#include "crossedfingers/display/OutputWrapper.h"
+#include "crossedfingers/internals/display/OutputWrapper.h"
 
 #include <format>
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto DefaultDisplay::printBeginSuite(const std::string &suite_name) -> void {
     // Nothing to do

@@ -30,11 +30,10 @@
 #include "TestSuite.h"
 
 #include <functional>
-#include <memory>
 #include <string>
 #include <vector>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class TestRun final {
     friend class RunCommand;
     friend class ListCommand;
@@ -76,6 +75,6 @@ class TestRun final {
 
     [[nodiscard]] auto listTests() const -> int;
 };
-} // namespace crossedfingers
+} // namespace crossedfingers::internals
 
 #endif // TESTRUN_H

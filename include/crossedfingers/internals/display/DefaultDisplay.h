@@ -21,30 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef OUTPUTWRAPPER_H
-#define OUTPUTWRAPPER_H
+#ifndef DEFAULTDISPLAY_H
+#define DEFAULTDISPLAY_H
 /**
- * Wrapper around iostream
+ * Default simple display
  */
 
-#include <sstream>
-#include <string>
+#include "Display.h"
 
-namespace crossedfingers {
-class OutputWrapper final {
+namespace crossedfingers::internals {
+class DefaultDisplay final : public Display {
   public:
-    static auto init() -> OutputWrapper &;
+    auto printBeginSuite(const std::string &suite_name) -> void override;
 
-    static auto print(const std::string &str) noexcept -> void;
+    auto printBeginCase(const std::string &case_name) -> void override;
 
-  private:
-    std::streambuf *_out;
-    std::stringstream _redirection;
+    auto printEndCase(const std::string &case_name) -> void override;
 
-    OutputWrapper();
+    auto printEndSuite(const std::string &suite_name) -> void override;
 
-    ~OutputWrapper();
+    auto printSkipCase(const std::string &case_name) -> void override;
+
+    auto printWarningCase(const std::string &case_name) -> void override;
+
+    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
+
+    auto printSummary(
+        int test_count,
+        int assertion_count,
+        const std::vector<std::string> &succeed_tests,
+        const std::vector<std::string> &skipped_tests,
+        const std::map<std::string, std::string> &warning_tests,
+        const std::map<std::string, std::string> &failed_tests
+    ) -> void override;
 };
 } // namespace crossedfingers
 
-#endif // OUTPUTWRAPPER_H
+#endif // DEFAULTDISPLAY_H

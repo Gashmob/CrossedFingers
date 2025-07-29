@@ -27,9 +27,9 @@
  * Assertion class, it contains assertions logic
  */
 
+#include "../../utilities.h"
+#include "../TestStatus.h"
 #include "AssertionException.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/utils.h"
 
 #include <any>
 #include <filesystem>
@@ -38,7 +38,7 @@
 #include <set>
 #include <string>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class Assertion final {
   public:
     [[noreturn]] static auto _skip() -> void;
@@ -318,6 +318,6 @@ template<> inline auto AssertionMatcherBase<std::string>::isDirectory() const ->
 
     Assertion::success();
 }
-} // namespace crossedfingers
+} // namespace crossedfingers::internals
 
 #endif // ASSERTION_H

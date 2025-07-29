@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,26 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ASSERT_H
-#define ASSERT_H
-/**
- * Collection of assertions
- */
 
-#include "Assertion.h"
+#ifndef GLOBALSTATE_H
+#define GLOBALSTATE_H
 
-#define skip() crossedfingers::Assertion::_skip()
+#include <string>
+#include <optional>
 
-#define fail(message) crossedfingers::Assertion::_fail(message)
+namespace crossedfingers::internals {
+class GlobalState final {
+  public:
+    static int random_seed;
+    static std::optional<std::string> filter;
 
-namespace crossedfingers {
-template<typename ActualType> [[nodiscard]] auto assertThat(const ActualType &actual) -> AssertionMatcher<ActualType> {
-    return AssertionMatcher(actual);
-}
+  private:
+    GlobalState() = default;
 
-template<typename ExceptionType> auto expectException(const std::string &message = "") -> void {
-    TestStatus::instance().shouldCatchException<ExceptionType>(message);
-}
+    ~GlobalState() = default;
+};
 } // namespace crossedfingers
 
-#endif // ASSERT_H
+#endif // GLOBALSTATE_H
