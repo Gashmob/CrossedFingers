@@ -58,12 +58,12 @@ target_compile_definitions(crossedfingers
         PUBLIC LIB_VERSION="${LIB_VERSION}"
 )
 
-target_compile_options(crossedfingers PUBLIC -Wall)
+target_compile_options(crossedfingers PUBLIC -Wall -Wextra -Wpedantic) # FIXME: -Werror cannot be as YesChief! contains warning
 
 ## CrossedFingers main lib
 add_library(crossedfingers_main "${PROJECT_SOURCE_DIR}/src/main.cpp")
 target_link_libraries(crossedfingers_main PUBLIC crossedfingers)
-target_compile_options(crossedfingers_main PUBLIC -Wall)
+target_compile_options(crossedfingers_main PUBLIC -Wall -Werror -Wextra -Wpedantic)
 
 # _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 # Tests

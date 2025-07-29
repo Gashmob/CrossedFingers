@@ -21,40 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef DEFAULTDISPLAY_H
-#define DEFAULTDISPLAY_H
+#ifndef RUNCOMMAND_H
+#define RUNCOMMAND_H
 /**
- * Default simple display
+ * Main command, it runs the tests
  */
 
-#include "Display.h"
+#include "../TestRun.h"
 
-namespace crossedfingers {
-class DefaultDisplay final : public Display {
+#include <yeschief.h>
+
+namespace crossedfingers::internals {
+class RunCommand final : public yeschief::Command {
   public:
-    auto printBeginSuite(const std::string &suite_name) -> void override;
+    explicit RunCommand(TestRun *test_run): _test_run(test_run) {}
 
-    auto printBeginCase(const std::string &case_name) -> void override;
+    [[nodiscard]] auto getName() const -> std::string override {
+        return "run";
+    }
 
-    auto printEndCase(const std::string &case_name) -> void override;
+    [[nodiscard]] auto getDescription() const -> std::string override {
+        return "Run tests contained in the program";
+    }
 
-    auto printEndSuite(const std::string &suite_name) -> void override;
+    auto setup(yeschief::CLI &cli) -> void override;
 
-    auto printSkipCase(const std::string &case_name) -> void override;
+    auto run(const yeschief::CLIResults &results) -> int override;
 
-    auto printWarningCase(const std::string &case_name) -> void override;
-
-    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
-
-    auto printSummary(
-        int test_count,
-        int assertion_count,
-        const std::vector<std::string> &succeed_tests,
-        const std::vector<std::string> &skipped_tests,
-        const std::map<std::string, std::string> &warning_tests,
-        const std::map<std::string, std::string> &failed_tests
-    ) -> void override;
+  private:
+    TestRun *_test_run;
 };
 } // namespace crossedfingers
 
-#endif // DEFAULTDISPLAY_H
+#endif // RUNCOMMAND_H

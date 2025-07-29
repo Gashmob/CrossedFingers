@@ -27,9 +27,9 @@
  * Assertion class, it contains assertions logic
  */
 
+#include "../../utilities.h"
+#include "../TestStatus.h"
 #include "AssertionException.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/utils.h"
 
 #include <any>
 #include <filesystem>
@@ -38,7 +38,7 @@
 #include <set>
 #include <string>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class Assertion final {
   public:
     [[noreturn]] static auto _skip() -> void;
@@ -120,30 +120,37 @@ template<typename ActualType> class AssertionMatcherBase {
     }
 
     auto matchesRegex(const std::string &pattern) const -> void {
+        (void) pattern;
         Assertion::_fail("Cannot match a regex against a '" + getTypeName<ActualType>() + "'.");
     }
 
     auto hasSubString(const std::string &sub) const -> void {
+        (void) sub;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' has a sub string.");
     }
 
     auto startsWith(const std::string &start) const -> void {
+        (void) start;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' starts with a string.");
     }
 
     auto endsWith(const std::string &end) const -> void {
+        (void) end;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' ends with a string.");
     }
 
     template<typename ContainedType> auto contains(const ContainedType &contained) const -> void {
+        (void) contained;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' contains something.");
     }
 
     template<typename KeyType> auto hasKey(const KeyType &key) const -> void {
+        (void) key;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' has some key.");
     }
 
-    auto count(int number) const -> void {
+    auto count(const unsigned int number) const -> void {
+        (void) number;
         Assertion::_fail("Cannot check that a '" + getTypeName<ActualType>() + "' has N elements.");
     }
 
@@ -243,7 +250,7 @@ template<> inline auto AssertionMatcherBase<std::string>::endsWith(const std::st
             Assertion::success();                                                                                      \
         }                                                                                                              \
                                                                                                                        \
-        auto count(int number) const -> void {                                                                         \
+        auto count(const unsigned int number) const -> void {                                                          \
             if (AssertionMatcherBase<ContainerType<ContainedType>>::_actual.size() != number) {                        \
                 Assertion::_fail("Failed asserting that container has " + std::to_string(number) + " elements.");      \
             }                                                                                                          \
@@ -286,6 +293,22 @@ class AssertionMatcher<std::array<ContainedType, Size>> : public AssertionMatche
 
         Assertion::success();
     }
+
+    auto count(const unsigned int number) const -> void {
+        if (AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.size() != number) {
+            Assertion::_fail("Failed asserting that container has " + std::to_string(number) + " elements.");
+        }
+
+        Assertion::success();
+    }
+
+    auto isEmpty() const -> void {
+        if (! AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.empty()) {
+            Assertion::_fail("Failed asserting that container is empty.");
+        }
+
+        Assertion::success();
+    }
 };
 
 template<typename KeyType, typename ValueType>
@@ -318,6 +341,6 @@ template<> inline auto AssertionMatcherBase<std::string>::isDirectory() const ->
 
     Assertion::success();
 }
-} // namespace crossedfingers
+} // namespace crossedfingers::internals
 
 #endif // ASSERTION_H

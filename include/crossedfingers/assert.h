@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2025-Present Kevin Traini
@@ -21,25 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#ifndef ASSERT_H
+#define ASSERT_H
+/**
+ * Collection of assertions
+ */
 
-#ifndef UTILS_H
-#define UTILS_H
-
-#include <cxxabi.h>
-#include <string>
+#include "internals/assert/Assertion.h"
 
 namespace crossedfingers {
-template<typename Type> auto getTypeName() -> std::string {
-    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
+template<typename ActualType> [[nodiscard]] auto assertThat(const ActualType &actual) -> internals::AssertionMatcher<ActualType> {
+    return internals::AssertionMatcher(actual);
 }
 
-template<typename Type> auto getTypeName(const Type &_) -> std::string {
-    return abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
-}
-
-inline auto getTypeName(const std::type_info *type) -> std::string {
-    return abi::__cxa_demangle(type->name(), nullptr, nullptr, nullptr);
+template<typename ExceptionType> auto expectException(const std::string &message = "") -> void {
+    internals::TestStatus::instance().shouldCatchException<ExceptionType>(message);
 }
 } // namespace crossedfingers
 
-#endif // UTILS_H
+#endif // ASSERT_H

@@ -21,48 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef DEFAULTDISPLAY_H
+#define DEFAULTDISPLAY_H
 /**
- * How to display tests in console
+ * Default simple display
  */
 
-#include <map>
-#include <string>
-#include <vector>
+#include "Display.h"
 
-namespace crossedfingers {
-class Display {
+namespace crossedfingers::internals {
+class DefaultDisplay final : public Display {
   public:
-    virtual auto printBeginSuite(const std::string &suite_name) -> void = 0;
+    auto printBeginSuite(const std::string &suite_name) -> void override;
 
-    virtual auto printBeginCase(const std::string &case_name) -> void = 0;
+    auto printBeginCase(const std::string &case_name) -> void override;
 
-    virtual auto printEndCase(const std::string &case_name) -> void = 0;
+    auto printEndCase(const std::string &case_name) -> void override;
 
-    virtual auto printEndSuite(const std::string &suite_name) -> void = 0;
+    auto printEndSuite(const std::string &suite_name) -> void override;
 
-    virtual auto printSkipCase(const std::string &case_name) -> void = 0;
+    auto printSkipCase(const std::string &case_name) -> void override;
 
-    virtual auto printWarningCase(const std::string &case_name) -> void = 0;
+    auto printWarningCase(const std::string &case_name) -> void override;
 
-    virtual auto printFailCase(const std::string &case_name, const std::string &message) -> void = 0;
+    auto printFailCase(const std::string &case_name, const std::string &message) -> void override;
 
-    virtual auto printSummary(
+    auto printSummary(
         int test_count,
         int assertion_count,
         const std::vector<std::string> &succeed_tests,
         const std::vector<std::string> &skipped_tests,
         const std::map<std::string, std::string> &warning_tests,
         const std::map<std::string, std::string> &failed_tests
-    ) -> void
-        = 0;
-
-  protected:
-    Display() = default;
-
-    ~Display() = default;
+    ) -> void override;
 };
 } // namespace crossedfingers
 
-#endif // DISPLAY_H
+#endif // DEFAULTDISPLAY_H

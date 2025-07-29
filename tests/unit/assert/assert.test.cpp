@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <crossedfingers/assert/AssertionException.h>
+#include <crossedfingers/internals/assert/AssertionException.h>
 #include <crossedfingers/test.h>
 #include <list>
 #include <set>
@@ -37,7 +37,7 @@ describe(assert, []() {
 
     describe(fail, []() {
         it("Should throw an AssertionException", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             fail("");
         });
     });
@@ -48,7 +48,7 @@ describe(assert, []() {
         });
 
         it("Fail on false", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(false).isTrue();
         });
     });
@@ -59,7 +59,7 @@ describe(assert, []() {
         });
 
         it("Fail on true", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(true).isFalse();
         });
     });
@@ -80,19 +80,19 @@ describe(assert, []() {
         });
 
         it("Fail on comparing different values but same type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isEqualTo(3);
-            // assertThrow(assertEquals(3.14, 9.81), crossedfingers::AssertionException);
-            // assertThrow(assertEquals(true, false), crossedfingers::AssertionException);
-            // assertThrow(assertEquals('a', 'b'), crossedfingers::AssertionException);
-            // assertThrow(assertEquals("hello", "world"), crossedfingers::AssertionException);
+            // assertThrow(assertEquals(3.14, 9.81), crossedfingers::internals::AssertionException);
+            // assertThrow(assertEquals(true, false), crossedfingers::internals::AssertionException);
+            // assertThrow(assertEquals('a', 'b'), crossedfingers::internals::AssertionException);
+            // assertThrow(assertEquals("hello", "world"), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing different types", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isEqualTo(3.0);
-            // assertThrow(assertEquals('A', 96), crossedfingers::AssertionException);
-            // assertThrow(assertEquals(0, true), crossedfingers::AssertionException);
+            // assertThrow(assertEquals('A', 96), crossedfingers::internals::AssertionException);
+            // assertThrow(assertEquals(0, true), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -106,19 +106,19 @@ describe(assert, []() {
         });
 
         it("Fail on comparing same value but different type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isStrictEqualTo(2.0);
-            // assertThrow(assertSame('A', 65), crossedfingers::AssertionException);
-            // assertThrow(assertSame(0, false), crossedfingers::AssertionException);
+            // assertThrow(assertSame('A', 65), crossedfingers::internals::AssertionException);
+            // assertThrow(assertSame(0, false), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing different values but same type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isStrictEqualTo(3);
-            // assertThrow(assertSame(3.14, 9.81), crossedfingers::AssertionException);
-            // assertThrow(assertSame(true, false), crossedfingers::AssertionException);
-            // assertThrow(assertSame('a', 'b'), crossedfingers::AssertionException);
-            // assertThrow(assertSame("hello", "world"), crossedfingers::AssertionException);
+            // assertThrow(assertSame(3.14, 9.81), crossedfingers::internals::AssertionException);
+            // assertThrow(assertSame(true, false), crossedfingers::internals::AssertionException);
+            // assertThrow(assertSame('a', 'b'), crossedfingers::internals::AssertionException);
+            // assertThrow(assertSame("hello", "world"), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -138,19 +138,19 @@ describe(assert, []() {
         });
 
         it("Fail on comparing same values", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isNotEqualTo(2);
-            // assertThrow(assertNotEquals(3.14, 3.14), crossedfingers::AssertionException);
-            // assertThrow(assertNotEquals(true, true), crossedfingers::AssertionException);
-            // assertThrow(assertNotEquals('c', 'c'), crossedfingers::AssertionException);
-            // assertThrow(assertNotEquals("hello", "hello"), crossedfingers::AssertionException);
+            // assertThrow(assertNotEquals(3.14, 3.14), crossedfingers::internals::AssertionException);
+            // assertThrow(assertNotEquals(true, true), crossedfingers::internals::AssertionException);
+            // assertThrow(assertNotEquals('c', 'c'), crossedfingers::internals::AssertionException);
+            // assertThrow(assertNotEquals("hello", "hello"), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing same values different types", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isNotEqualTo(2.0);
-            // assertThrow(assertNotEquals('A', 65), crossedfingers::AssertionException);
-            // assertThrow(assertNotEquals(0, false), crossedfingers::AssertionException);
+            // assertThrow(assertNotEquals('A', 65), crossedfingers::internals::AssertionException);
+            // assertThrow(assertNotEquals(0, false), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -168,17 +168,17 @@ describe(assert, []() {
         });
 
         it("Fail on comparing expected gte value", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isLessThan(3);
-            // assertThrow(assertLessThan(3.14, 9.81), crossedfingers::AssertionException);
-            // assertThrow(assertLessThan('a', 'b'), crossedfingers::AssertionException);
+            // assertThrow(assertLessThan(3.14, 9.81), crossedfingers::internals::AssertionException);
+            // assertThrow(assertLessThan('a', 'b'), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing expected gte value different type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isLessThan(3.0);
-            // assertThrow(assertLessThan(3.14, 10), crossedfingers::AssertionException);
-            // assertThrow(assertLessThan('a', 345), crossedfingers::AssertionException);
+            // assertThrow(assertLessThan(3.14, 10), crossedfingers::internals::AssertionException);
+            // assertThrow(assertLessThan('a', 345), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -201,17 +201,17 @@ describe(assert, []() {
         });
 
         it("Fail on comparing expected gt value", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isLessThanOrEqualTo(3);
-            // assertThrow(assertLessThanOrEquals(3.14, 9.81), crossedfingers::AssertionException);
-            // assertThrow(assertLessThanOrEquals('a', 'b'), crossedfingers::AssertionException);
+            // assertThrow(assertLessThanOrEquals(3.14, 9.81), crossedfingers::internals::AssertionException);
+            // assertThrow(assertLessThanOrEquals('a', 'b'), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing expected gt value different type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(2).isLessThanOrEqualTo(3.0);
-            // assertThrow(assertLessThanOrEquals(3.14, 10), crossedfingers::AssertionException);
-            // assertThrow(assertLessThanOrEquals('a', 345), crossedfingers::AssertionException);
+            // assertThrow(assertLessThanOrEquals(3.14, 10), crossedfingers::internals::AssertionException);
+            // assertThrow(assertLessThanOrEquals('a', 345), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -229,17 +229,17 @@ describe(assert, []() {
         });
 
         it("Fail on comparing expected lte value", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3).isGreaterThan(2);
-            // assertThrow(assertGreaterThan(9.81, 3.14), crossedfingers::AssertionException);
-            // assertThrow(assertGreaterThan('b', 'a'), crossedfingers::AssertionException);
+            // assertThrow(assertGreaterThan(9.81, 3.14), crossedfingers::internals::AssertionException);
+            // assertThrow(assertGreaterThan('b', 'a'), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing expected lte value different type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3.0).isGreaterThan(2);
-            // assertThrow(assertGreaterThan(10, 3.14), crossedfingers::AssertionException);
-            // assertThrow(assertGreaterThan(345, 'a'), crossedfingers::AssertionException);
+            // assertThrow(assertGreaterThan(10, 3.14), crossedfingers::internals::AssertionException);
+            // assertThrow(assertGreaterThan(345, 'a'), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -262,17 +262,17 @@ describe(assert, []() {
         });
 
         it("Fail on comparing expected lt value", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3).isGreaterThanOrEqualTo(2);
-            // assertThrow(assertGreaterThanOrEquals(9.81, 3.14), crossedfingers::AssertionException);
-            // assertThrow(assertGreaterThanOrEquals('b', 'a'), crossedfingers::AssertionException);
+            // assertThrow(assertGreaterThanOrEquals(9.81, 3.14), crossedfingers::internals::AssertionException);
+            // assertThrow(assertGreaterThanOrEquals('b', 'a'), crossedfingers::internals::AssertionException);
         });
 
         it("Fail on comparing expected lt value different type", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3.0).isGreaterThanOrEqualTo(2);
-            // assertThrow(assertGreaterThanOrEquals(10, 3.14), crossedfingers::AssertionException);
-            // assertThrow(assertGreaterThanOrEquals(345, 'a'), crossedfingers::AssertionException);
+            // assertThrow(assertGreaterThanOrEquals(10, 3.14), crossedfingers::internals::AssertionException);
+            // assertThrow(assertGreaterThanOrEquals(345, 'a'), crossedfingers::internals::AssertionException);
         });
     });
 
@@ -290,12 +290,12 @@ describe(assert, []() {
         });
 
         it("Should not match", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string("foo.bar")).matchesRegex("^[a-z]+\\.txt$");
         });
 
         it("Should fail when is not a string", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3).matchesRegex("Cannot match a regex against a 'int'.");
         });
     });
@@ -307,12 +307,13 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string("Bonjour !")).hasSubString("llo");
         });
 
         it("Should fail when is not a string", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' has a sub string.");
+            expectException<crossedfingers::internals::AssertionException>("Cannot check that a 'int' has a sub string."
+            );
             assertThat(3).hasSubString("llo");
         });
     });
@@ -323,12 +324,14 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string("bar")).startsWith("foo");
         });
 
         it("Should fail when is not a string", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' starts with a string.");
+            expectException<crossedfingers::internals::AssertionException>(
+                "Cannot check that a 'int' starts with a string."
+            );
             assertThat(3).startsWith("foo");
         });
     });
@@ -339,12 +342,14 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string("bar")).endsWith("foo");
         });
 
         it("Should fail when is not a string", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' ends with a string.");
+            expectException<crossedfingers::internals::AssertionException>(
+                "Cannot check that a 'int' ends with a string."
+            );
             assertThat(3).endsWith("foo");
         });
     });
@@ -377,12 +382,14 @@ describe(assert, []() {
 
         it("Should fail", []() {
             const std::vector container({1, 3});
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(container).contains(2);
         });
 
         it("Should fail when is not a container", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' contains something.");
+            expectException<crossedfingers::internals::AssertionException>(
+                "Cannot check that a 'int' contains something."
+            );
             assertThat(3).contains("foo");
         });
     });
@@ -405,12 +412,12 @@ describe(assert, []() {
               {"b", 2},
               {"c", 3},
             });
-            expectException<crossedfingers::AssertionException>("Failed asserting that map contains key");
+            expectException<crossedfingers::internals::AssertionException>("Failed asserting that map contains key");
             assertThat(container).hasKey("d");
         });
 
         it("Should fail when not a map", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' has some key.");
+            expectException<crossedfingers::internals::AssertionException>("Cannot check that a 'int' has some key.");
             assertThat(3).hasKey("a");
         });
     });
@@ -438,12 +445,12 @@ describe(assert, []() {
 
         it("Should fail", []() {
             const std::vector container({1, 2, 3});
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(container).count(2);
         });
 
         it("Should fail when is not a container", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' has N elements.");
+            expectException<crossedfingers::internals::AssertionException>("Cannot check that a 'int' has N elements.");
             assertThat(3).count(1);
         });
     });
@@ -471,12 +478,12 @@ describe(assert, []() {
 
         it("Should fail", []() {
             const std::vector container({1, 2, 3});
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(container).isEmpty();
         });
 
         it("Should fail when is not a container", []() {
-            expectException<crossedfingers::AssertionException>("Cannot check that a 'int' is empty.");
+            expectException<crossedfingers::internals::AssertionException>("Cannot check that a 'int' is empty.");
             assertThat(3).isEmpty();
         });
     });
@@ -484,6 +491,7 @@ describe(assert, []() {
     describe(matchPredicate, []() {
         it("Should success", []() {
             assertThat('c').matchPredicate([](const char &_) {
+                (void) _;
                 return true;
             });
             assertThat(3).matchPredicate([](const int &n) {
@@ -492,8 +500,9 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>("Predicate returned false.");
+            expectException<crossedfingers::internals::AssertionException>("Predicate returned false.");
             assertThat(3).matchPredicate([](const int &_) {
+                (void) _;
                 return false;
             });
         });
@@ -507,7 +516,7 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(3).matchType<char>();
         });
     });
@@ -518,7 +527,7 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(new int(3)).isNull();
         });
     });
@@ -529,12 +538,14 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string(FIXTURES_PATH "/not_existing")).isFile();
         });
 
         it("Should fail when not a string", []() {
-            expectException<crossedfingers::AssertionException>("Need a valid std::string to check if it exists.");
+            expectException<crossedfingers::internals::AssertionException>(
+                "Need a valid std::string to check if it exists."
+            );
             assertThat(3).isFile();
         });
     });
@@ -545,12 +556,14 @@ describe(assert, []() {
         });
 
         it("Should fail", []() {
-            expectException<crossedfingers::AssertionException>();
+            expectException<crossedfingers::internals::AssertionException>();
             assertThat(std::string(FIXTURES_PATH "/some_file")).isDirectory();
         });
 
         it("Should fail when not a string", []() {
-            expectException<crossedfingers::AssertionException>("Need a valid std::string to check if it exists.");
+            expectException<crossedfingers::internals::AssertionException>(
+                "Need a valid std::string to check if it exists."
+            );
             assertThat(3).isDirectory();
         });
     });

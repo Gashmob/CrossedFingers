@@ -24,26 +24,13 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include "../utilities.h"
+
 #include <optional>
 #include <regex>
 #include <string>
 
-namespace crossedfingers {
-inline auto split(const std::string &str, const std::string &delimiter) -> std::vector<std::string> {
-    const std::regex split_regex(delimiter);
-    std::sregex_token_iterator iter(str.begin(), str.end(), split_regex, -1);
-    const std::sregex_token_iterator end;
-    std::vector<std::string> result;
-    while (iter != end) {
-        std::string current = *iter++;
-        if (! current.empty()) {
-            result.push_back(current);
-        }
-    }
-
-    return result;
-}
-
+namespace crossedfingers::internals {
 inline auto splitPattern(const std::string &pattern) -> std::vector<std::string> {
     if (pattern.empty()) {
         return {};
@@ -53,10 +40,10 @@ inline auto splitPattern(const std::string &pattern) -> std::vector<std::string>
     const auto end  = split(temp[temp.size() - 1], "::");
 
     std::vector<std::string> result;
-    for (int i = 0; i < temp.size() - 1; ++i) {
+    for (unsigned int i = 0; i < temp.size() - 1; ++i) {
         result.push_back(temp[i]);
     }
-    for (const auto & element : end) {
+    for (const auto &element : end) {
         result.push_back(element);
     }
 
@@ -82,6 +69,6 @@ inline auto matchPattern(const std::string &name, const std::optional<std::strin
 
     return true;
 }
-} // namespace crossedfingers
+} // namespace crossedfingers::internals
 
 #endif // UTILS_HPP

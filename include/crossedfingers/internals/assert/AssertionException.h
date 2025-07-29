@@ -30,7 +30,7 @@
 #include <string>
 #include <utility>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class AssertionException : public std::exception {
   public:
     const std::string _message;
@@ -46,6 +46,6 @@ class SkipException final : public AssertionException {
   public:
     SkipException(): AssertionException("Test case skipped") {}
 };
-} // namespace crossedfingers
+} // namespace crossedfingers::internals
 
 #endif // ASSERTIONEXCEPTION_H

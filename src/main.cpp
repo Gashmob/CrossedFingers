@@ -24,5 +24,5 @@
 #include <crossedfingers/test.h>
 
 auto main(int argc, char **argv) -> int {
-    return crossedfingers::TestRun::instance().run(argc, argv);
+    return crossedfingers::internals::TestRun::instance().run(argc, argv);
 }

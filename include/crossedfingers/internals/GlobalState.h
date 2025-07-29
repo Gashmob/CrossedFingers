@@ -28,7 +28,7 @@
 #include <string>
 #include <optional>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class GlobalState final {
   public:
     static int random_seed;

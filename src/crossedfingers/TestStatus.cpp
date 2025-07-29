@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/TestStatus.h"
+#include "crossedfingers/internals/TestStatus.h"
 
-#include "crossedfingers/assert/Assertion.h"
-#include "crossedfingers/utils.h"
+#include "crossedfingers/internals/assert/Assertion.h"
+#include "crossedfingers/utilities.h"
 
 #include <stdexcept>
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto TestStatus::instance() -> TestStatus & {
     static TestStatus instance;

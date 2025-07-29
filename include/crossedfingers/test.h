@@ -27,16 +27,24 @@
  * Main header file. It includes all sub-headers and define macros
  */
 
-#include "TestRun.h"
-#include "assert/assert.h"
+#include "./assert.h"
+#include "internals/TestRun.h"
 
 #include <format>
 
 #define describe(name, ...) \
-    [[maybe_unused]] const auto t_##name = crossedfingers::TestRun::instance().addSuite(#name, __VA_ARGS__)
+    [[maybe_unused]] const auto t_##name = crossedfingers::internals::TestRun::instance().addSuite(#name, __VA_ARGS__)
+
+inline auto skip() -> void {
+    crossedfingers::internals::Assertion::_skip();
+}
+
+inline auto fail(const std::string &message) -> void {
+    crossedfingers::internals::Assertion::_fail(message);
+}
 
 inline auto it(const std::string &name, const std::function<void()> &callback) -> void {
-    crossedfingers::TestRun::instance().addCase(name, callback);
+    crossedfingers::internals::TestRun::instance().addCase(name, callback);
 }
 
 template<typename Callback, typename... Args>
@@ -50,24 +58,24 @@ auto it_each(
             },
             args
         );
-        crossedfingers::TestRun::instance().addParameterizedCase(name, args, callback);
+        crossedfingers::internals::TestRun::instance().addParameterizedCase(name, args, callback);
     }
 }
 
 inline auto before(const std::function<void()> &callback) -> void {
-    crossedfingers::TestRun::instance().addBefore(callback);
+    crossedfingers::internals::TestRun::instance().addBefore(callback);
 }
 
 inline auto beforeEach(const std::function<void()> &callback) -> void {
-    crossedfingers::TestRun::instance().addBeforeEach(callback);
+    crossedfingers::internals::TestRun::instance().addBeforeEach(callback);
 }
 
 inline auto after(const std::function<void()> &callback) -> void {
-    crossedfingers::TestRun::instance().addAfter(callback);
+    crossedfingers::internals::TestRun::instance().addAfter(callback);
 }
 
 inline auto afterEach(const std::function<void()> &callback) -> void {
-    crossedfingers::TestRun::instance().addAfterEach(callback);
+    crossedfingers::internals::TestRun::instance().addAfterEach(callback);
 }
 
 #endif // TEST_H

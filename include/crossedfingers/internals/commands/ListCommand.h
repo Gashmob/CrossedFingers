@@ -21,30 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef OUTPUTWRAPPER_H
-#define OUTPUTWRAPPER_H
+#ifndef LISTCOMMAND_H
+#define LISTCOMMAND_H
 /**
- * Wrapper around iostream
+ * This command list all the tests case line by line
  */
 
-#include <sstream>
-#include <string>
+#include "../TestRun.h"
 
-namespace crossedfingers {
-class OutputWrapper final {
+#include <yeschief.h>
+
+namespace crossedfingers::internals {
+class ListCommand final : public yeschief::Command {
   public:
-    static auto init() -> OutputWrapper &;
+    explicit ListCommand(TestRun *test_run): _test_run(test_run) {}
 
-    static auto print(const std::string &str) noexcept -> void;
+    [[nodiscard]] auto getName() const -> std::string override {
+        return "list";
+    }
+
+    [[nodiscard]] auto getDescription() const -> std::string override {
+        return "List tests contained in the program";
+    }
+
+    auto run(const yeschief::CLIResults &results) -> int override;
 
   private:
-    std::streambuf *_out;
-    std::stringstream _redirection;
-
-    OutputWrapper();
-
-    ~OutputWrapper();
+    TestRun *_test_run;
 };
 } // namespace crossedfingers
 
-#endif // OUTPUTWRAPPER_H
+#endif // LISTCOMMAND_H

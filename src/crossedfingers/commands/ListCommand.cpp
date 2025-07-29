@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "crossedfingers/commands/ListCommand.h"
+#include "crossedfingers/internals/commands/ListCommand.h"
 
-#include "crossedfingers/display/OutputWrapper.h"
+#include "crossedfingers/internals/display/OutputWrapper.h"
 
-using namespace crossedfingers;
+using namespace crossedfingers::internals;
 
 auto ListCommand::run(const yeschief::CLIResults &results) -> int {
+    (void) results;
     OutputWrapper::init();
     return _test_run->listTests();
 }

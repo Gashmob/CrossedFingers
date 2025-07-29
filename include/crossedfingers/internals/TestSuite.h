@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-namespace crossedfingers {
+namespace crossedfingers::internals {
 class TestSuite final {
   public:
     explicit TestSuite(std::string name);

@@ -21,36 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef RUNCOMMAND_H
-#define RUNCOMMAND_H
+#ifndef OUTPUTWRAPPER_H
+#define OUTPUTWRAPPER_H
 /**
- * Main command, it runs the tests
+ * Wrapper around iostream
  */
 
-#include "../TestRun.h"
+#include <sstream>
+#include <string>
 
-#include <yeschief.h>
-
-namespace crossedfingers {
-class RunCommand final : public yeschief::Command {
+namespace crossedfingers::internals {
+class OutputWrapper final {
   public:
-    explicit RunCommand(TestRun *test_run): _test_run(test_run) {}
+    static auto init() -> OutputWrapper &;
 
-    [[nodiscard]] auto getName() const -> std::string override {
-        return "run";
-    }
-
-    [[nodiscard]] auto getDescription() const -> std::string override {
-        return "Run tests contained in the program";
-    }
-
-    auto setup(yeschief::CLI &cli) -> void override;
-
-    auto run(const yeschief::CLIResults &results) -> int override;
+    static auto print(const std::string &str) noexcept -> void;
 
   private:
-    TestRun *_test_run;
+    std::streambuf *_out;
+    std::stringstream _redirection;
+
+    OutputWrapper();
+
+    ~OutputWrapper();
 };
 } // namespace crossedfingers
 
-#endif // RUNCOMMAND_H
+#endif // OUTPUTWRAPPER_H
