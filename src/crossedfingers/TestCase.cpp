@@ -23,13 +23,8 @@
  */
 #include "crossedfingers/TestCase.h"
 
-#include "crossedfingers/GlobalState.h"
-#include "crossedfingers/TestStatus.h"
-#include "crossedfingers/assert/AssertionException.h"
 #include "crossedfingers/display/OutputWrapper.h"
-#include "utils.hpp"
 
-#include <format>
 #include <utility>
 
 using namespace crossedfingers;

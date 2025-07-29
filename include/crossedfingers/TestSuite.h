@@ -43,6 +43,12 @@ class TestSuite final {
 
     auto addTestCase(const std::string &name, const std::function<void()> &callback) -> void;
 
+    template<typename Callback, typename... Args>
+    auto addParameterizedTestCase(const std::string &name, const std::tuple<Args...> &args, const Callback &callback)
+        -> void {
+        _test_cases.emplace_back(std::make_shared<ParameterizedTestCase<Callback, Args...>>(name, args, callback));
+    }
+
     auto setBefore(const std::function<void()> &callback) -> void;
 
     auto setBeforeEach(const std::function<void()> &callback) -> void;
@@ -62,7 +68,7 @@ class TestSuite final {
     std::optional<std::function<void()>> _after;
     std::optional<std::function<void()>> _after_each;
     std::vector<TestSuite> _sub_suites;
-    std::vector<TestCase> _test_cases;
+    std::vector<std::shared_ptr<TestCase>> _test_cases;
 };
 } // namespace crossedfingers
 

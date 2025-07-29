@@ -23,10 +23,10 @@
  */
 #include "crossedfingers/TestSuite.h"
 
+#include "../../include/crossedfingers/internals/utils.hpp"
 #include "crossedfingers/GlobalState.h"
 #include "crossedfingers/TestStatus.h"
 #include "crossedfingers/assert/AssertionException.h"
-#include "utils.hpp"
 
 #include <format>
 #include <random>
@@ -42,7 +42,7 @@ auto TestSuite::addSubSuite(const std::string &name) -> TestSuite * {
 }
 
 auto TestSuite::addTestCase(const std::string &name, const std::function<void()> &callback) -> void {
-    _test_cases.emplace_back(name, callback);
+    _test_cases.emplace_back(std::make_shared<TestCase>(name, callback));
 }
 
 auto TestSuite::setBefore(const std::function<void()> &callback) -> void {
@@ -110,7 +110,7 @@ auto TestSuite::run(const std::string &current_name) -> void {
         }
 
         try {
-            test_case.run(suite_fullname);
+            test_case->run(suite_fullname);
         } catch (SkipException &) {
             TestStatus::instance().skip();
         } catch (AssertionException &failure) {
@@ -139,6 +139,6 @@ auto TestSuite::list(const std::string &current_name) const -> void {
     }
 
     for (const auto &test_case : _test_cases) {
-        test_case.list(suite_fullname);
+        test_case->list(suite_fullname);
     }
 }

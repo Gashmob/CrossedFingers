@@ -48,6 +48,16 @@ class TestRun final {
 
     auto addCase(const std::string &name, const std::function<void()> &callback) const -> void;
 
+    template<typename Callback, typename... Args>
+    auto addParameterizedCase(const std::string &name, const std::tuple<Args...> &args, const Callback &callback) const
+        -> void {
+        if (_current_suite == nullptr) {
+            throw std::logic_error("Hmmm, there is something strange : a test case were added in global context");
+        }
+
+        _current_suite->addParameterizedTestCase(name, args, callback);
+    }
+
     auto addBefore(const std::function<void()> &callback) const -> void;
 
     auto addBeforeEach(const std::function<void()> &callback) const -> void;
