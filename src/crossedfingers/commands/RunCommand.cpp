@@ -26,6 +26,7 @@
 #include "crossedfingers/internals/GlobalState.h"
 #include "crossedfingers/internals/TestStatus.h"
 #include "crossedfingers/internals/display/DefaultDisplay.h"
+#include "crossedfingers/internals/display/DotDisplay.h"
 #include "crossedfingers/internals/display/OutputWrapper.h"
 
 using namespace crossedfingers::internals;
@@ -47,11 +48,25 @@ auto RunCommand::setup(yeschief::CLI &cli) -> void {
           .value_help = "<pattern>",
         }
     );
+    cli.addOption<std::string>(
+        "display",
+        "Choose a type of display: default|dot",
+        {
+          .required   = false,
+          .value_help = "<default|dot>",
+        }
+    );
 }
 
 auto RunCommand::run(const yeschief::CLIResults &results) -> int {
     OutputWrapper::init();
-    TestStatus::instance().setDisplay(new DefaultDisplay());
+
+    const auto display = std::any_cast<std::string>(results.get("display").value_or(std::string("default")));
+    if (display == "dot") {
+        TestStatus::instance().setDisplay(new DotDisplay());
+    } else {
+        TestStatus::instance().setDisplay(new DefaultDisplay());
+    }
 
     const auto seed = std::any_cast<int>(results.get("random-seed").value_or(static_cast<int>(std::time(nullptr))));
     OutputWrapper::print("Using seed: " + std::to_string(seed) + "\n");
