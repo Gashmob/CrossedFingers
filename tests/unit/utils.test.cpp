@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include "test_tools.hpp"
+
 #include <crossedfingers/internals/utils.hpp>
 #include <crossedfingers/test.h>
 #include <crossedfingers/utilities.h>

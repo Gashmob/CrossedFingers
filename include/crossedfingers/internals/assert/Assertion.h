@@ -30,6 +30,7 @@
 #include "../../utilities.h"
 #include "../TestStatus.h"
 #include "AssertionException.h"
+#include "Diff.h"
 
 #include <any>
 #include <filesystem>
@@ -67,7 +68,7 @@ template<typename ActualType> class AssertionMatcherBase {
 
     template<typename ExpectedType> auto isEqualTo(const ExpectedType &expected) const -> void {
         if (_actual != expected) {
-            Assertion::_fail("Failed asserting that actual value is equal to expected.");
+            Assertion::_fail("Failed asserting that actual value is equal to expected.\n" + diff(expected, _actual));
         }
         Assertion::success();
     }
@@ -75,46 +76,55 @@ template<typename ActualType> class AssertionMatcherBase {
     template<typename ExpectedType> auto isStrictEqualTo(const ExpectedType &expected) const -> void {
         if (typeid(_actual) != typeid(expected)) {
             Assertion::_fail(
-                "Failed asserting that actual value is strict equal to expected, they don't have the same type."
+                "Failed asserting that actual value is strict equal to expected, they don't have the same type.\n"
+                + diff(getTypeName(expected), getTypeName(_actual))
             );
         }
         if (_actual != expected) {
-            Assertion::_fail("Failed asserting that actual value is equal to expected.");
+            Assertion::_fail("Failed asserting that actual value is equal to expected.\n" + diff(expected, _actual));
         }
         Assertion::success();
     }
 
     template<typename ExpectedType> auto isNotEqualTo(const ExpectedType &expected) const -> void {
         if (_actual == expected) {
-            Assertion::_fail("Failed asserting that actual value is not equal to expected.");
+            Assertion::_fail(
+                "Failed asserting that actual value is not equal to expected.\n" + diff(expected, _actual)
+            );
         }
         Assertion::success();
     }
 
     template<typename ExpectedType> auto isLessThan(const ExpectedType &expected) const -> void {
         if (_actual >= expected) {
-            Assertion::_fail("Failed asserting that actual value is less than expected.");
+            Assertion::_fail("Failed asserting that actual value is less than expected.\n" + diff(expected, _actual));
         }
         Assertion::success();
     }
 
     template<typename ExpectedType> auto isLessThanOrEqualTo(const ExpectedType &expected) const -> void {
         if (_actual > expected) {
-            Assertion::_fail("Failed asserting that actual value is less than or equal to expected.");
+            Assertion::_fail(
+                "Failed asserting that actual value is less than or equal to expected.\n" + diff(expected, _actual)
+            );
         }
         Assertion::success();
     }
 
     template<typename ExpectedType> auto isGreaterThan(const ExpectedType &expected) const -> void {
         if (_actual <= expected) {
-            Assertion::_fail("Failed asserting that actual value is greater than expected.");
+            Assertion::_fail(
+                "Failed asserting that actual value is greater than expected.\n" + diff(expected, _actual)
+            );
         }
         Assertion::success();
     }
 
     template<typename ExpectedType> auto isGreaterThanOrEqualTo(const ExpectedType &expected) const -> void {
         if (_actual < expected) {
-            Assertion::_fail("Failed asserting that actual value is greater than or equal to expected.");
+            Assertion::_fail(
+                "Failed asserting that actual value is greater than or equal to expected.\n" + diff(expected, _actual)
+            );
         }
         Assertion::success();
     }
@@ -207,24 +217,24 @@ template<> inline auto AssertionMatcherBase<std::string>::matchesRegex(const std
 }
 
 template<> inline auto AssertionMatcherBase<std::string>::hasSubString(const std::string &sub) const -> void {
-    if (! std::string(_actual).contains(sub)) {
-        Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' contains '" + sub + "'");
+    if (! _actual.contains(sub)) {
+        Assertion::_fail("Failed asserting that '" + _actual + "' contains '" + sub + "'");
     }
 
     Assertion::success();
 }
 
 template<> inline auto AssertionMatcherBase<std::string>::startsWith(const std::string &start) const -> void {
-    if (! std::string(_actual).starts_with(start)) {
-        Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' starts with '" + start + "'");
+    if (! _actual.starts_with(start)) {
+        Assertion::_fail("Failed asserting that '" + _actual + "' starts with '" + start + "'");
     }
 
     Assertion::success();
 }
 
 template<> inline auto AssertionMatcherBase<std::string>::endsWith(const std::string &end) const -> void {
-    if (! std::string(_actual).ends_with(end)) {
-        Assertion::_fail("Failed asserting that '" + std::string(_actual) + "' ends with '" + end + "'");
+    if (! _actual.ends_with(end)) {
+        Assertion::_fail("Failed asserting that '" + _actual + "' ends with '" + end + "'");
     }
 
     Assertion::success();
@@ -244,7 +254,7 @@ template<> inline auto AssertionMatcherBase<std::string>::endsWith(const std::st
                     contained                                                                                          \
                 )                                                                                                      \
                 == AssertionMatcherBase<ContainerType<ContainedType>>::_actual.end()) {                                \
-                Assertion::_fail("Failed asserting that container contains value");                                    \
+                Assertion::_fail("Failed asserting that container contains value " + serialize(contained));            \
             }                                                                                                          \
                                                                                                                        \
             Assertion::success();                                                                                      \
@@ -288,7 +298,7 @@ class AssertionMatcher<std::array<ContainedType, Size>> : public AssertionMatche
                 contained
             )
             == AssertionMatcherBase<std::array<ContainedType, Size>>::_actual.end()) {
-            Assertion::_fail("Failed asserting that container contains value");
+            Assertion::_fail("Failed asserting that container contains value " + serialize(contained));
         }
 
         Assertion::success();
@@ -319,7 +329,7 @@ class AssertionMatcher<std::map<KeyType, ValueType>> : public AssertionMatcherBa
 
     auto hasKey(const KeyType &key) const -> void {
         if (! AssertionMatcherBase<std::map<KeyType, ValueType>>::_actual.contains(key)) {
-            Assertion::_fail("Failed asserting that map contains key");
+            Assertion::_fail("Failed asserting that map contains key " + serialize(key));
         }
 
         Assertion::success();
