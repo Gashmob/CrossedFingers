@@ -808,14 +808,14 @@ SHOW_USED_FILES        = YES
 # (if specified).
 # The default value is: YES.
 
-SHOW_FILES             = YES
+SHOW_FILES             = NO
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the Namespaces
 # page. This will remove the Namespaces entry from the Quick Index and from the
 # Folder Tree View (if specified).
 # The default value is: YES.
 
-SHOW_NAMESPACES        = YES
+SHOW_NAMESPACES        = NO
 
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that
 # Doxygen should invoke to get the current version for each file (typically from
@@ -983,11 +983,11 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "README.md" "include" "USAGE.md"
+INPUT                  = "README.md" "include" "USAGE.md" "SECURITY.md" "CODE_OF_CONDUCT.md" "CONTRIBUTING.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
-# libiconv (or the iconv built into libc) for the transcoding. See the libiconv
+# libiconv (or the iconv built into libc) for the transcoding. See th e libiconv
 # documentation (see:
 # https://www.gnu.org/software/libiconv/) for the list of possible encodings.
 # See also: INPUT_FILE_ENCODING
@@ -1088,7 +1088,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which Doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = "include/crossedfingers/internals"
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
